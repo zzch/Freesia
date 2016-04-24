@@ -1,0 +1,94 @@
+<header class="page-header">
+  <h2>创建会员卡</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @card %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会员卡信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @card, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.type' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.select :type, card_type_options, {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control populate' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.name' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.price' %> <span class="required">*</span></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= f.text_field :price, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'card.valid_months' %> <span class="required">*</span></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= f.text_field :valid_months, class: 'form-control' %>
+                <span class="input-group-addon">月</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.useable' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.collection_select :bay_tag_ids, @current_club.bay_tags, :id, :name, {}, multiple: true, data: { 'plugin-multiselect' => 'true', 'plugin-options' => '{ "maxHeight": 200, "includeSelectAllOption": true }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.initial_amount' %> <span class="required">*</span></label>
+            <div class="col-sm-2 card-initial-amount card-type-non-unlimited">
+              <div class="input-group">
+                <%= f.text_field :initial_amount, class: 'form-control' %>
+                <span class="input-group-addon card-initial-amount-unit"></span>
+              </div>
+            </div>
+            <div class="col-sm-2 card-initial-amount card-type-unlimited">
+              <%= text_field_tag nil, '不可用', readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', cards_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      showCardInitialAmount();
+      $('#card_type').on('change', function() {
+        showCardInitialAmount();
+      });
+      function showCardInitialAmount() {
+        $('.card-initial-amount').hide();
+        if ($('#card_type').val() == 'by_ball') {
+          $('.card-type-non-unlimited').show();
+          $('.card-initial-amount-unit').html('筐球');
+        } else if ($('#card_type').val() == 'by_time') {
+          $('.card-type-non-unlimited').show();
+          $('.card-initial-amount-unit').html('小时');
+        } else if ($('#card_type').val() == 'stored') {
+          $('.card-type-non-unlimited').show();
+          $('.card-initial-amount-unit').html('元');
+        } else {
+          $('.card-type-unlimited').show();
+        }
+      }
+    });
+  </script>
+<% end %>

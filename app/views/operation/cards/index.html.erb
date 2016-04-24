@@ -1,0 +1,46 @@
+<header class="page-header">
+  <h2>会员卡列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会员卡列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'card.type' %></th>
+                <th><%= porto_arat 'card.name' %></th>
+                <th><%= porto_arat 'card.price' %></th>
+                <th><%= porto_arat 'card.initial_amount' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="table-paginate"><%= porto_paginate @cards %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @cards.each do |card| %>
+              <tr>
+                <td><%= te_card_type(card.type) %></td>
+                <td><%= card.name %></td>
+                <td><%= porto_price(card.price) %></td>
+                <td><%= card_initial_amount(card) %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), card %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_card_path(card) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

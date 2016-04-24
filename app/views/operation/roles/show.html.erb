@@ -1,0 +1,88 @@
+<header class="page-header">
+  <h2>查看用户组</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">用户组信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'role.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @role.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'role.omnipotent' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_boolean(@role.omnipotent), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'role.permissions' %></label>
+            <div class="col-sm-6">
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight">会籍管理</span></h5>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.create_member, porto_arat('role.create_member')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.edit_member, porto_arat('role.edit_member')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.cancel_member, porto_arat('role.cancel_member')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.trash_member, porto_arat('role.trash_member')) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight">其它管理</span></h5>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_role, porto_arat('role.manage_role')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_operator, porto_arat('role.manage_operator')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_bay, porto_arat('role.manage_bay')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_card, porto_arat('role.manage_card')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_saleman, porto_arat('role.manage_saleman')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_product, porto_arat('role.manage_product')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_coach, porto_arat('role.manage_coach')) %>
+                    </div>
+                    <div class="permission-item">
+                      <%= styled_role_permission(@role.manage_course, porto_arat('role.manage_course')) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', roles_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_role_path(@role), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+  

@@ -1,0 +1,86 @@
+<header class="page-header">
+  <h2>查看用户</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">用户信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.phone' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @user.masked_phone, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @user.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.gender' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, te_user_gender(@user.gender), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.created_at' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_date(@user.created_at), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', users_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_user_path(@user), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会籍列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'member.number' %></th>
+                <th><%= porto_arat 'card.type' %></th>
+                <th><%= porto_arat 'card.name' %></th>
+                <th><%= porto_arat 'member.amount' %></th>
+                <th><%= porto_arat 'member.issued_at' %></th>
+                <th><%= porto_arat 'member.expired_at' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @user.members.by_club(@current_club).each do |member| %>
+              <tr>
+                <td><%= member.number %></td>
+                <td><%= te_card_type(member.card.type) %></td>
+                <td><%= member.card.name %></td>
+                <td><%= member_amount(member) %></td>
+                <td><%= porto_date(member.issued_at) %></td>
+                <td><%= porto_date(member.expired_at) %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), member %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

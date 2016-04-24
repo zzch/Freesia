@@ -1,0 +1,96 @@
+<header class="page-header">
+  <h2>创建用户组</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @role %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">用户组信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @role, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'role.name' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'role.permissions' %></label>
+            <div class="col-sm-6">
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight">会籍管理</span></h5>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :create_member %>
+                      <label for="role_create_member"><%= porto_arat 'role.create_member' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :edit_member %>
+                      <label for="role_edit_member"><%= porto_arat 'role.edit_member' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :cancel_member %>
+                      <label for="role_cancel_member"><%= porto_arat 'role.cancel_member' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :trash_member %>
+                      <label for="role_trash_member"><%= porto_arat 'role.trash_member' %></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight">其它管理</span></h5>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_role %>
+                      <label for="role_manage_role"><%= porto_arat 'role.manage_role' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_operator %>
+                      <label for="role_manage_operator"><%= porto_arat 'role.manage_operator' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_bay %>
+                      <label for="role_manage_bay"><%= porto_arat 'role.manage_bay' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_card %>
+                      <label for="role_manage_card"><%= porto_arat 'role.manage_card' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_saleman %>
+                      <label for="role_manage_saleman"><%= porto_arat 'role.manage_saleman' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_product %>
+                      <label for="role_manage_product"><%= porto_arat 'role.manage_product' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_coach %>
+                      <label for="role_manage_coach"><%= porto_arat 'role.manage_coach' %></label>
+                    </div>
+                    <div class="checkbox-inline checkbox-custom">
+                      <%= f.check_box :manage_course %>
+                      <label for="role_manage_course"><%= porto_arat 'role.manage_course' %></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', roles_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<header class="page-header">
+  <h2>确认注销</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @member %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会籍信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @member, url: cancel_member_path(@member), method: :put, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.card' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @member.card.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.holder' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @member.holder.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.number' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @member.number, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.amount' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, member_amount(@member), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">备注</label>
+            <div class="col-sm-6">
+              <%= text_area_tag :remarks, nil, placeholder: '请填写注销的原因及理由', rows: 8, data: { 'plugin-maxlength' => true }, maxlength: '500', class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', @member, class: 'btn btn-default' %>&nbsp;
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      $('[data-toggle="confirmation"]').confirmation();
+    });
+  </script>
+<% end %>

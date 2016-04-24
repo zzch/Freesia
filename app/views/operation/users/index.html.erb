@@ -1,0 +1,55 @@
+<header class="page-header">
+  <h2>会员列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <ul class="letter-list mb-xlg">
+      <li><%= link_to '全', users_path, class: ('active' if params[:letter].blank?) %></li>
+      <% 'a'.upto('z') do |initial| %>
+      <li><%= link_to initial, initial_users_path(letter: initial), class: ('active' if params[:letter] == initial) %></li>
+      <% end %>
+    </ul>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title"><%= "\"#{params[:letter].upcase}姓氏\" " unless params[:letter].blank? %>会员列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'user.name' %></th>
+                <th><%= porto_arat 'user.gender' %></th>
+                <th><%= porto_arat 'user.phone' %></th>
+                <th><%= porto_arat 'user.member_count' %></th>
+                <th><%= porto_arat 'user.state' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6" class="table-paginate"><%= porto_paginate @users %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @users.each do |user| %>
+              <tr>
+                <td><%= user.name %></td>
+                <td><%= te_user_gender(user.gender) %></td>
+                <td><%= user.masked_phone %></td>
+                <td><%= user.members.by_club(@current_club).count %>张</td>
+                <td><%= user.aasm.human_state %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), user %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_user_path(user) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

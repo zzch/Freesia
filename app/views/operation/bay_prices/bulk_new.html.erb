@@ -1,0 +1,134 @@
+<header class="page-header">
+  <h2>批量设置价格</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @form %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">价格信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @form, url: bulk_create_card_bay_prices_path(@card), html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @card.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bay_prices.bays' %></label>
+            <div class="col-sm-6">
+              <% Bay.locations.keys.each do |location| %>
+              <% unless @current_club.bays.located(location).blank? %>
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight"><%= te_bay_location(location.to_sym) %></span></h5>
+                <div class="row">
+                <% @current_club.bays.located(location).each do |bay| %>
+                <div class="col-sm-2">
+                  <div class="checkbox-inline checkbox-custom checkbox-default">
+                    <%= f.check_box :bay_ids, { id: "bay_id_#{bay.id}", name: 'operation_bulk_create_bay_prices[bay_ids][]', class: bay.tags.map{|tag| "tag-#{tag.id}"}.join(' '), disabled: !@card.useable?(bay) }, bay.id %>
+                    <label for="bay_id_<%= bay.id %>"><%= bay.name %></label>
+                  </div>
+                </div>
+                <% end %>
+                </div>
+              </div>
+              <% end %>
+              <% end %>
+              <% @current_club.bay_tags.each do |bay_tag| %>
+              <%= link_to bay_tag.name, 'javascript:false;', onclick: "toggleBay(#{bay_tag.id})", class: 'btn btn-primary btn-xs mb5' %>&nbsp;
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bay_prices.mode' %></label>
+            <div class="col-sm-6">
+              <div class="radio-inline radio-custom">
+                <%= f.radio_button :mode, :set_price, checked: true %>
+                <label for="operation_bulk_create_bay_prices_mode_set_price">设置价格</label>
+              </div>
+              <div class="radio-inline radio-custom">
+                <%= f.radio_button :mode, :set_discount %>
+                <label for="operation_bulk_create_bay_prices_mode_set_discount">设置折扣</label>
+              </div>
+              <div class="radio-inline radio-custom radio-danger">
+                <%= f.radio_button :mode, :destroy %>
+                <label for="operation_bulk_create_bay_prices_mode_destroy">删除</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_hour' %></label>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+                <%= f.text_field :weekday_price_per_hour, class: 'form-control bay-price' %>
+                <span class="input-group-addon bay-unit">元</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+                <%= f.text_field :holiday_price_per_hour, class: 'form-control bay-price' %>
+                <span class="input-group-addon bay-unit">元</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_bucket' %></label>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+                <%= f.text_field :weekday_price_per_bucket, class: 'form-control bay-price' %>
+                <span class="input-group-addon bay-unit">元</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+                <%= f.text_field :holiday_price_per_bucket, class: 'form-control bay-price' %>
+                <span class="input-group-addon bay-unit">元</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= submit_tag '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', @card, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    function toggleBay(tagId) {
+      if ($('.tag-' + tagId + ':not([disabled]):checked').length == $('.tag-' + tagId + ':not([disabled])').length) {
+        $('.tag-' + tagId + ':not([disabled])').prop('checked', false);
+      } else {
+        $('.tag-' + tagId + ':not([disabled])').prop('checked', true);
+      }
+    }
+    jQuery(document).ready(function() {
+      if ($('#operation_bulk_create_bay_prices_mode_set_price').is(':checked')) {
+        $('.bay-unit').html('元');
+      } else if ($('#operation_bulk_create_bay_prices_mode_set_price').is(':checked')) {
+        $('.bay-unit').html('折');
+      }
+      $('#operation_bulk_create_bay_prices_mode_set_price').on('click', function () {
+        $('.bay-price').prop('disabled', false);
+        $('.bay-unit').html('元');
+      })
+      $('#operation_bulk_create_bay_prices_mode_set_discount').on('click', function () {
+        $('.bay-price').prop('disabled', false);
+        $('.bay-unit').html('折');
+      })
+      $('#operation_bulk_create_bay_prices_mode_destroy').on('click', function () {
+        $('.bay-price').prop('disabled', true);
+      })
+    });
+  </script>
+<% end %>

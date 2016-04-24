@@ -1,0 +1,44 @@
+<header class="page-header">
+  <h2>创建商品</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @product %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">商品信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @product, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'product.category' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.collection_select :category_id, @current_club.product_categories, :id, :name, {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'product.name' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'product.price' %></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= f.text_field :price, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', products_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

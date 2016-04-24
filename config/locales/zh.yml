@@ -1,0 +1,520 @@
+---
+zh:
+  date:
+    abbr_day_names:
+    - 周日
+    - 周一
+    - 周二
+    - 周三
+    - 周四
+    - 周五
+    - 周六
+    abbr_month_names:
+    - 
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
+    day_names:
+    - 星期日
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期六
+    formats:
+      default: "%Y-%m-%d"
+      long: "%Y年%b%d日"
+      short: "%b%d日"
+    month_names:
+    - 
+    - 一月
+    - 二月
+    - 三月
+    - 四月
+    - 五月
+    - 六月
+    - 七月
+    - 八月
+    - 九月
+    - 十月
+    - 十一月
+    - 十二月
+    order:
+    - :year
+    - :month
+    - :day
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: 大约一小时
+        other: 大约 %{count} 小时
+      about_x_months:
+        one: 大约一个月
+        other: 大约 %{count} 个月
+      about_x_years:
+        one: 大约一年
+        other: 大约 %{count} 年
+      almost_x_years:
+        one: 接近一年
+        other: 接近 %{count} 年
+      half_a_minute: 半分钟
+      less_than_x_minutes:
+        one: 不到一分钟
+        other: 不到 %{count} 分钟
+      less_than_x_seconds:
+        one: 不到一秒
+        other: 不到 %{count} 秒
+      over_x_years:
+        one: 一年多
+        other: "%{count} 年多"
+      x_days:
+        one: 一天
+        other: "%{count} 天"
+      x_minutes:
+        one: 一分钟
+        other: "%{count} 分钟"
+      x_months:
+        one: 一个月
+        other: "%{count} 个月"
+      x_seconds:
+        one: 一秒
+        other: "%{count} 秒"
+    prompts:
+      day: 日
+      hour: 时
+      minute: 分
+      month: 月
+      second: 秒
+      year: 年
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      accepted: 必须是可被接受的
+      blank: 不能为空字符
+      present: 必须是空白
+      confirmation: 与确认值不匹配
+      empty: 不能留空
+      equal_to: 必须等于 %{count}
+      even: 必须为双数
+      exclusion: 是保留关键字
+      greater_than: 必须大于 %{count}
+      greater_than_or_equal_to: 必须大于或等于 %{count}
+      inclusion: 不包含于列表中
+      invalid: 是无效的
+      less_than: 必须小于 %{count}
+      less_than_or_equal_to: 必须小于或等于 %{count}
+      not_a_number: 不是数字
+      not_an_integer: 必须是整数
+      odd: 必须为单数
+      record_invalid: '验证失败: %{errors}'
+      restrict_dependent_destroy:
+        one: 由于 %{record} 需要此记录，所以无法移除记录
+        many: 由于 %{record} 需要此记录，所以无法移除记录
+      taken: 已经被使用
+      too_long:
+        one: 过长（最长为一个字符）
+        other: 过长（最长为 %{count} 个字符）
+      too_short:
+        one: 过短（最短为一个字符）
+        other: 过短（最短为 %{count} 个字符）
+      wrong_length:
+        one: 长度非法（必须为一个字符）
+        other: 长度非法（必须为 %{count} 个字符）
+      other_than: 长度非法（不可为 %{count} 个字符
+    template:
+      body: 如下字段出现错误：
+      header:
+        one: 有 1 个错误发生导致「%{model}」无法被保存。
+        other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
+    email:
+      invalid: 无效的电子邮箱地址
+    keyword:
+      blank: 关键字不能为空
+  helpers:
+    select:
+      prompt: 请选择
+    submit:
+      create: 新增%{model}
+      submit: 储存%{model}
+      update: 更新%{model}
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u %n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: CN¥
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: 十亿
+          million: 百万
+          quadrillion: 千兆
+          thousand: 千
+          trillion: 兆
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 1
+        significant: false
+        strip_insignificant_zeros: false
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: ", 和 "
+      two_words_connector: " 和 "
+      words_connector: ", "
+  time:
+    am: 上午
+    formats:
+      default: "%Y年%b%d日 %A %H:%M:%S %Z"
+      long: "%Y年%b%d日 %H:%M"
+      short: "%b%d日 %H:%M"
+    pm: 下午
+  views:
+    pagination:
+      first: "&laquo; 首页"
+      last: "末页 &raquo;"
+      previous: "&lsaquo; 上一页"
+      next: "下一页 &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "No %{entry_name} found"
+          one: "Displaying <b>1</b> %{entry_name}"
+          other: "Displaying <b>all %{count}</b> %{entry_name}"
+      more_pages:
+        display_entries: "Displaying %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> of <b>%{total}</b> in total"
+  activerecord:
+    attributes:
+      administrator:
+        original_password: 原密码
+        new_password: 新密码
+        password_confirmation: 确认密码
+      role:
+        name: 名称
+        omnipotent: 超级管理员
+        operators: 用户数量
+        permissions: 权限
+        manage_role: 用户组管理
+        manage_operator: 用户管理
+        manage_bay: 打位管理
+        manage_card: 会员卡管理
+        manage_saleman: 销售管理
+        manage_product: 商品管理
+        manage_coach: 教练管理
+        manage_course: 课程管理
+        create_member: 创建会籍
+        edit_member: 编辑会籍
+        cancel_member: 注销会籍
+        trash_member: 删除会籍
+      operator:
+        account: 账号
+        password: 密码
+        name: 姓名
+        last_signed_in_at: 最后登录时间
+        state: 状态
+        state/available: 正常
+        original_password: 原密码
+        new_password: 新密码
+        password_confirmation: 确认密码
+        omnipotent: 超级管理员
+      user:
+        phone: 电话
+        name: 姓名
+        gender: 性别
+        member_count: 会籍
+        created_at: 注册日期
+        state: 状态
+        state/available: 正常
+        state/prohibited: 已禁用
+      club:
+        name: 名称
+        short_name: 简写
+        code: 代号
+        floors: 楼层
+        position: 位置
+        longitude: 经度
+        latitude: 纬度
+        address: 地址
+        phone_number: 联系电话
+        balls_per_bucket: 每筐球数量
+        minimum_charging_minutes: 最小计费时间
+        unit_charging_minutes: 单位计费时间
+        maximum_discard_minutes: 最大舍弃时间
+      member:
+        card: 卡类型
+        original_price: 原价
+        actual_price: 实际价格
+        number: 卡号
+        amount: 余额
+        issued_at: 办理日期
+        expired_at: 有效期
+        remarks: 备注
+        state: 状态
+        state/available: 正常
+        state/cancelled: 已注销
+        state/trashed: 已删除
+        holder: 持卡人
+      membership:
+        role: 角色
+        state: 状态
+        state/available: 正常
+        state/prohibited: 已禁用
+      bay:
+        name: 名称
+        tags: 标签
+        location: 位置
+        price: 价格
+        price_per_hour: 每小时费用
+        price_per_bucket: 每筐球费用
+        weekday_price: 平日价
+        holiday_price: 假日价
+        state: 状态
+        state/unoccupied: 空闲
+        state/occupied: 使用中
+        state/closed: 已关闭
+        state/trashed: 已删除
+      tab:
+        sequence: 单号
+        bay: 打位
+        operator: 操作员
+        user: 用户
+        member: 会员
+        entrance_time: 入场时间
+        departure_time: 离场时间
+        state: 状态
+        state/progressing: 进行中
+        state/confirming: 等待确认
+        state/finished: 已完成
+        state/cancelled: 已取消
+        state/voided: 已撤销
+        created_at: 下单时间
+      playing_item:
+        started_at: 开始时间
+        finished_at: 结束时间
+        balls: 用球记录
+      product_item:
+        product: 商品名称
+        price: 价格
+        quantity: 数量
+        total_price: 小计
+        created_at: 下单时间
+      extra_item:
+        type: 类型
+        price: 价格
+        remarks: 备注
+        created_at: 下单时间
+      card:
+        type: 类型
+        name: 名称
+        price: 价格
+        valid_months: 有效期
+        useable: 打位使用权
+        initial_amount: 初始额度
+        bay_price: 打位价格
+      product_category:
+        name: 名称
+        products_count: 商品数量
+      product:
+        category: 分类
+        serial_number: 代号
+        name: 名称
+        image: 图片
+        price: 价格
+        description: 描述
+        state: 状态
+        state/on_sale: 销售中
+        state/discontinued: 已停售
+        state/out_of_stock: 缺货
+      member_expense:
+        created_at: 时间
+        type: 类型
+        item: 内容
+        amount: 额度
+      transaction_record:
+        created_at: 时间
+        operator: 操作员
+        type: 类型
+        action: 子类型
+        tab: 消费单
+        remarks: 备注
+      card_bay_price:
+        bay: 打位
+      reservation:
+        user: 会员
+        bay: 打位
+        will_playing_at: 预约时间
+      coach:
+        phone: 手机号
+        name: 姓名
+        headshot: 头像(大)
+        portrait: 头像(小)
+        gender: 性别
+        title: 头衔
+        starting_price: 课程起售价
+        short_description: 简短描述
+        description: 详细描述
+        featured: 特殊展示
+      course:
+        coach: 教练
+        type: 类型
+        name: 名称
+        price: 价格
+        valid_months: 有效期
+        maximum_lessons: 课时数量
+        maximum_students: 学生数量
+        description: 简介
+      lesson:
+        coach: 教练
+        course: 课程
+        name: 名称
+        started_at: 开始时间
+        finished_at: 结束时间
+        duration: 上课时间
+        maximum_students: 最大学生数
+      student:
+        user: 用户
+        coach: 教练
+        course: 课程
+        price: 价格
+        total_lessons: 课时数
+        expired_at: 有效期
+        state: 状态
+        state/progressing: 正常
+        state/finished: 已完成
+        state/cancelled: 已取消
+        state/expired: 已过期
+        created_at: 报名时间
+      announcement:
+        title: 标题
+        content: 内容
+        published_at: 发布时间
+        state: 状态
+        state/pending: 等待发布
+        state/published: 已发布
+        state/trashed: 已删除
+      promotion:
+        image: 图片
+        title: 标题
+        content: 内容
+        published_at: 发布时间
+        state: 状态
+        state/pending: 等待发布
+        state/published: 已发布
+        state/trashed: 已删除
+      feedback:
+        user: 用户
+        type: 类型
+        content: 内容
+        created_at: 提交时间
+      preference:
+        name: 参数名
+        value: 参数值
+        print_receipt: 前台确认时打印小票
+      version:
+        latest: 最新版本
+        name: 版本号
+        build: BUILD
+        content: 更新内容
+        state: 状态
+        state/pending: 等待发布
+        state/published: 已发布
+      salesman:
+        name: 姓名
+        members: 会籍
+        sales: 销售额
+        name: 姓名
+        phone: 手机号码
+        receive_sms: 是否接收短信
+      service_exception:
+        module: 模块
+        message: 错误信息
+        backtrace: 回溯信息
+        created_at: 发生时间
+  activemodel:
+    attributes:
+      operation/create_member:
+        phone: 电话
+        name: 姓名
+        first_name: 名
+        last_name: 姓
+        gender: 性别
+        male: 男
+        female: 女
+        card: 卡类型
+        original_price: 原价
+        actual_price: 实际价格
+        original_valid_months: 原有效期
+        actual_valid_months: 实际有效期
+        number: 卡号
+        issued_at: 办理日期
+        salesman: 销售
+        remarks: 备注
+      operation/visitor_set_up_tab:
+        phone: 电话
+        name: 姓名
+        first_name: 名
+        last_name: 姓
+        gender: 性别
+        male: 男
+        female: 女
+      operation/bulk_create_bays:
+        prefix: 前缀
+        start_number: 开始编号
+        end_number: 结束编号
+        suffix: 后缀
+      operation/create_membership:
+        phone: 电话
+        name: 姓名
+        first_name: 名
+        last_name: 姓
+        gender: 性别
+        male: 男
+        female: 女
+      operation/bulk_create_bay_prices:
+        bays: 打位
+        mode: 操作模式
+        keep_decimal: 保留小数位
+        usual_price_per_hour: 每小时平日价
+        holiday_price_per_hour: 每小时假日价
+        usual_price_per_bucket: 每筐球平日价
+        holiday_price_per_bucket: 每筐球假日价

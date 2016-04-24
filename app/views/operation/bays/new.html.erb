@@ -1,0 +1,107 @@
+<header class="page-header">
+  <h2>创建打位</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @bay %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">打位信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @bay, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.name' %> <span class="required">*</span></label>
+            <div class="col-sm-2">
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'bay.location' %> <span class="required">*</span></label>
+            <div class="col-sm-2">
+              <%= f.select :location, bay_location_options, {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.tags' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.select :tag_names, [], {}, multiple: true, data: { role: 'tagsinput', 'tag-class' => 'label label-success' } %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_hour' %></label>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+                <%= f.text_field :weekday_price_per_hour, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+                <%= f.text_field :holiday_price_per_hour, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_bucket' %></label>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+                <%= f.text_field :weekday_price_per_bucket, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+                <%= f.text_field :holiday_price_per_bucket, class: 'form-control' %>
+                <span class="input-group-addon">元</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', bays_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function(){
+      $("#operation_create_member_phone").on('change', function() {
+        if((new RegExp(/^1[0-9]{2} - [0-9]{4} - [0-9]{4}$/).test($(this).val()))) {
+          $.ajax({
+            dataType: 'json',
+            url: '/users/async_uniqueness_check?phone=' + $(this).val().replace(/[ -]/g, ''),
+            success: function(data) {
+              if(data.found) {
+                $('#op_create_member_first_name').val(data.first_name);
+                $('#op_create_member_first_name').prop('disabled', true);
+                $('#op_create_member_last_name').val(data.last_name);
+                $('#op_create_member_last_name').prop('disabled', true);
+                $('#op_create_member_gender_' + data.gender).prop('checked', 'checked');
+                $('#op_create_member_gender_male').prop('disabled', true);
+                $('#op_create_member_gender_female').prop('disabled', true);
+                $('#uniqueness_tip').removeClass('hide');
+              } else {
+                $('#op_create_member_first_name').val('');
+                $('#op_create_member_first_name').prop('disabled', false);
+                $('#op_create_member_last_name').val('');
+                $('#op_create_member_last_name').prop('disabled', false);
+                $('#op_create_member_gender_male').prop('disabled', false);
+                $('#op_create_member_gender_female').prop('disabled', false);
+                $('#uniqueness_tip').addClass('hide');
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
+<% end %>

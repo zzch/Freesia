@@ -1,0 +1,249 @@
+<!doctype html>
+<html class="fixed sidebar-dark sidebar-left-sm">
+  <head>
+    <meta charset="UTF-8">
+    <title>练球宝 - 高尔夫练习场服务云平台</title>
+    <meta name="description" content="练球宝 - 高尔夫练习场服务云平台">
+    <meta name="author" content="Beijing iSports Co., Ltd.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <%= stylesheet_link_tag 'porto', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'modernizr', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body data-loading-overlay class="loading-overlay-showing">
+    <span class="loading-overlay light"> 
+      <span class="loader black"></span> 
+    </span>
+    <section class="body">
+      <header class="header">
+        <div class="logo-container">
+          <a href="/" class="logo">
+            <%= image_tag('porto/logo.png', height: 35) %>
+          </a>
+          <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+            <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+          </div>
+        </div>
+        <div class="header-right">
+          <form action="pages-search-results.html" class="search nav-form">
+            <div class="input-group input-search">
+              <input type="text" class="form-control" name="q" id="q" placeholder="搜索...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+          <span class="separator"></span>
+          <ul class="notifications">
+            <li>
+              <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                <i class="fa fa-tasks"></i>
+                <span class="badge">3</span>
+              </a>
+              <div class="dropdown-menu notification-menu large">
+                <div class="notification-title">
+                  <span class="pull-right label label-default">3</span>
+                  消费单
+                </div>
+                <div class="content">
+                  <ul>
+                    <li>
+                      <p class="clearfix mb-xs">
+                        <span class="message pull-left">Generating Sales Report</span>
+                        <span class="message pull-right text-dark">60%</span>
+                      </p>
+                      <div class="progress progress-xs light">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                      </div>
+                    </li>
+      
+                    <li>
+                      <p class="clearfix mb-xs">
+                        <span class="message pull-left">Importing Contacts</span>
+                        <span class="message pull-right text-dark">98%</span>
+                      </p>
+                      <div class="progress progress-xs light">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100" style="width: 98%;"></div>
+                      </div>
+                    </li>
+      
+                    <li>
+                      <p class="clearfix mb-xs">
+                        <span class="message pull-left">Uploading something big</span>
+                        <span class="message pull-right text-dark">33%</span>
+                      </p>
+                      <div class="progress progress-xs light mb-xs">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%;"></div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                <i class="fa fa-bell"></i>
+                <span class="badge">3</span>
+              </a>
+              <div class="dropdown-menu notification-menu">
+                <div class="notification-title">
+                  <span class="pull-right label label-default">3</span>
+                  通知
+                </div>
+                <div class="content">
+                  <ul>
+                    <li>
+                      <a href="#" class="clearfix">
+                        <div class="image">
+                          <i class="fa fa-thumbs-down bg-danger"></i>
+                        </div>
+                        <span class="title">Server is Down!</span>
+                        <span class="message">Just now</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="clearfix">
+                        <div class="image">
+                          <i class="fa fa-lock bg-warning"></i>
+                        </div>
+                        <span class="title">User Locked</span>
+                        <span class="message">15 minutes ago</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="clearfix">
+                        <div class="image">
+                          <i class="fa fa-signal bg-success"></i>
+                        </div>
+                        <span class="title">Connection Restaured</span>
+                        <span class="message">10/10/2014</span>
+                      </a>
+                    </li>
+                  </ul>
+                  <hr />
+                  <div class="text-right">
+                    <a href="#" class="view-more">View All</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <span class="separator"></span>
+          <div id="userbox" class="userbox">
+            <a href="#" data-toggle="dropdown">
+              <figure class="profile-picture">
+                <%= image_tag('porto/portrait-default.png') %>
+              </figure>
+              <div class="profile-info" data-lock-name="><%= session['operator']['name'] %>">
+                <span class="name"><%= session['operator']['name'] %></span>
+                <span class="role">管理员</span>
+              </div>
+              <i class="fa custom-caret"></i>
+            </a>
+            <div class="dropdown-menu">
+              <ul class="list-unstyled">
+                <li class="divider"></li>
+                <li>
+                  <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> 我的信息</a>
+                </li>
+                <li>
+                  <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-cog"></i> 修改密码</a>
+                </li>
+                <li>
+                  <%= link_to raw('<i class="fa fa-power-off"></i> 退出登录'), sign_out_path, role: 'menuitem', tabindex: '-1' %>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="inner-wrapper">
+        <aside id="sidebar-left" class="sidebar-left">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              导航栏
+            </div>
+            <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+              <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+            </div>
+          </div>
+          <div class="nano">
+            <div class="nano-content">
+              <nav id="menu" class="nav-main" role="navigation">
+                <ul class="nav nav-main">
+                  <%= porto_nav '控制面板', 'fa fa-home', %w(dashboard), dashboard_path %>
+                  <%= porto_nav '会员管理', 'fa fa-user', %w(users members) do %>
+                    <li><%= link_to raw('会员列表'), users_path %></li>
+                    <li><%= link_to raw('会籍列表'), members_path %></li>
+                    <li><%= link_to raw('创建会籍'), new_member_path %></li>
+                  <% end %>
+                  <%= porto_nav '会员卡管理', 'fa fa-credit-card', %w(cards) do %>
+                    <li><%= link_to raw('会员卡列表'), cards_path %></li>
+                    <li><%= link_to raw('创建会员卡'), new_card_path %></li>
+                  <% end %>
+                  <%= porto_nav '打位管理', 'fa fa-map-pin', %w(bays) do %>
+                    <li><%= link_to raw('打位列表'), bays_path %></li>
+                    <li><%= link_to raw('创建打位'), new_bay_path %></li>
+                    <li><%= link_to raw('批量创建打位'), bulk_new_bays_path %></li>
+                  <% end %>
+                  <%= porto_nav '商品管理', 'fa fa-glass', %w(product_categories products) do %>
+                    <li><%= link_to raw('商品分类列表'), product_categories_path %></li>
+                    <li><%= link_to raw('创建商品分类'), new_product_category_path %></li>
+                    <li><%= link_to raw('商品列表'), products_path %></li>
+                    <li><%= link_to raw('创建商品'), new_product_path %></li>
+                  <% end %>
+                  <%= porto_nav '教学管理', 'fa fa-trophy', %w(coaches) do %>
+                    <li><%= link_to raw('教练列表'), coaches_path %></li>
+                    <li><%= link_to raw('创建教练'), new_coach_path %></li>
+                  <% end %>
+                  <%= porto_nav '用户管理', 'fa fa-lock', %w(roles operators) do %>
+                    <li><%= link_to raw('用户组列表'), roles_path %></li>
+                    <li><%= link_to raw('创建用户组'), new_role_path %></li>
+                  <% end %>
+                  <%= porto_nav '系统管理', 'fa fa-cog', %w(changelogs) do %>
+                    <li><%= link_to raw('更新日志'), changelogs_path %></li>
+                  <% end %>
+                </ul>
+              </nav>
+            </div>
+            <script>
+              if (typeof localStorage !== 'undefined') {
+                if (localStorage.getItem('sidebar-left-position') !== null) {
+                  var initialPosition = localStorage.getItem('sidebar-left-position'),
+                    sidebarLeft = document.querySelector('#sidebar-left .nano-content');
+                  sidebarLeft.scrollTop = initialPosition;
+                }
+              }
+            </script>
+          </div>
+        </aside>
+        <section role="main" class="content-body">
+          <%= yield %>
+        </section>
+      </div>
+      <aside id="sidebar-right" class="sidebar-right">
+        <div class="nano">
+          <div class="nano-content">
+            <a href="#" class="mobile-close visible-xs">
+              Collapse <i class="fa fa-chevron-right"></i>
+            </a>
+            <div class="sidebar-right-wrapper">
+              <div class="sidebar-widget widget-calendar">
+                <h6>Upcoming Tasks</h6>
+                <div data-plugin-datepicker data-plugin-skin="dark" ></div>
+                <ul>
+                  <li>
+                    <time datetime="2014-04-19T00:00+00:00">04/19/2014</time>
+                    <span>Company Meeting</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+    <%= javascript_include_tag 'porto', 'data-turbolinks-track' => true %>
+    <%= content_for :javascript %>
+  </body>
+</html>

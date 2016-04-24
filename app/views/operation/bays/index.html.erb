@@ -1,0 +1,44 @@
+<header class="page-header">
+  <h2>打位列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">打位列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-30">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'bay.name' %></th>
+                <th><%= porto_arat 'bay.location' %></th>
+                <th><%= porto_arat 'bay.tags' %></th>
+                <th><%= porto_arat 'bay.price' %></th>
+                <th><%= porto_arat 'bay.state' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @bays.each do |bay| %>
+              <tr>
+                <td><%= bay.name %></td>
+                <td><%= te_bay_location(bay.location) %></td>
+                <td class="bay-tags"><%= bay_tags(bay.tags) %></td>
+                <td><%= bay_price(bay) %></td>
+                <td><%= bay.aasm.human_state %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), bay %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_bay_path(bay) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

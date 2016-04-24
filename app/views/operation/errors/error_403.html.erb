@@ -1,0 +1,29 @@
+<header class="page-header">
+  <h2>访问被拒绝</h2>
+</header>
+<section class="body-error error-inside">
+  <div class="center-error">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="main-error mb-xlg">
+          <h2 class="error-code text-dark text-center text-weight-semibold m-none">403 <i class="fa fa-lock"></i></h2>
+          <p class="error-explanation text-center">很抱歉，您没有权限访问这个页面</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <h4 class="text">您可能需要以下操作：</h4>
+        <ul class="nav nav-list primary">
+          <li>
+            <%= link_to raw('<i class="fa fa-caret-right text-dark mr-xs"></i> 控制面板'), dashboard_path %>
+          </li>
+          <li>
+            <%= link_to raw('<i class="fa fa-caret-right text-dark mr-xs"></i> 我的权限'), dashboard_path %>
+          </li>
+          <li>
+            <%= link_to raw('<i class="fa fa-caret-right text-dark mr-xs"></i> 常见问题'), dashboard_path %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

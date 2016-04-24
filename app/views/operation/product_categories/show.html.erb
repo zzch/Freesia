@@ -1,0 +1,27 @@
+<header class="page-header">
+  <h2>查看商品分类</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">商品分类信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'product_category.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @product_category.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', product_categories_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_product_category_path(@product_category), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+</div>

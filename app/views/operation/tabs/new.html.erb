@@ -1,0 +1,136 @@
+<header class="page-header">
+  <h2>创建消费单</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @tab %>
+  </div>
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">打位信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.bay' %></label>
+            <div class="col-sm-6">
+              <% Bay.locations.keys.each do |location| %>
+              <% unless @current_club.bays.located(location).blank? %>
+              <div class="well well-sm">
+                <h5 class="subtitle"><span class="highlight"><%= te_bay_location(location.to_sym) %></span></h5>
+                <div class="row">
+                <% @current_club.bays.located(location).each do |bay| %>
+                <div class="col-sm-2">
+                  <div class="checkbox-inline checkbox-custom checkbox-default">
+                    <%= check_box_tag :bay_ids, bay.id, (params[:bay_ids].try(:include?, "#{bay.id}")), id: "bay_id_#{bay.id}", name: 'bay', disabled: (bay.occupied? or bay.closed?), class: 'bay-item' %>
+                    <label for="bay_id_<%= bay.id %>"><%= bay.name %></label>
+                  </div>
+                </div>
+                <% end %>
+                </div>
+              </div>
+              <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+  <div class="col-md-6">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会员</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @tab, url: member_set_up_tabs_path, html: { id: 'member_set_up', class: 'form-horizontal form-bordered' } do |f| %>
+          <%= hidden_field_tag :'bay_ids', nil %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">会员</label>
+            <div class="col-sm-8">
+              <%= f.select :user_id, user_options, { prompt: '请选择' }, data: { 'plugin-selectTwo' => 'true' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '创建', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', dashboard_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+  <div class="col-md-6">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">访客</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @form, url: visitor_set_up_tabs_path, html: { id: 'visitor_set_up', class: 'form-horizontal form-bordered' } do |f| %>
+          <%= hidden_field_tag :'bay_ids', nil %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/visitor_set_up_tab.phone' %></label>
+            <div class="col-sm-8">
+              <div class="input-group">
+                <span class="input-group-addon">+86</span>
+                <%= f.text_field :phone, data: { 'plugin-masked-input' => 'true', 'input-mask' => '999 - 9999 - 9999' }, placeholder: '___-____-____', class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/visitor_set_up_tab.name' %></label>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_amat 'operation/visitor_set_up_tab.last_name' %></span>
+                <%= f.text_field :last_name, class: 'form-control' %>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_amat 'operation/visitor_set_up_tab.first_name' %></span>
+                <%= f.text_field :first_name, class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/visitor_set_up_tab.gender' %> <span class="asterisk">*</span></label>
+            <div class="col-sm-6">
+              <div class="radio-inline radio-custom radio-primary">
+                <%= f.radio_button :gender, :male, checked: true %>
+                <label for="op_visitor_set_up_tab_gender_male"><%= porto_amat 'operation/visitor_set_up_tab.male' %></label>
+              </div>
+              <div class="radio-inline radio-custom radio-danger">
+                <%= f.radio_button :gender, :female %>
+                <label for="op_visitor_set_up_tab_gender_female"><%= porto_amat 'operation/visitor_set_up_tab.female' %></label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '创建', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', dashboard_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function(){
+      $('#member_set_up').on('submit', function(){
+        setBayIds();
+      });
+      $('#visitor_set_up').on('submit', function(){
+        setBayIds();
+      });
+
+      function setBayIds() {
+        $('input[name=bay_ids]').val($('.bay-item:checked').map(function() {return this.value}).get());
+      }
+    });
+  </script>
+<% end %>

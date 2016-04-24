@@ -1,0 +1,117 @@
+<header class="page-header">
+  <h2>查看会员卡</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会员卡信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.type' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, te_card_type(@card.type), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @card.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.price' %></label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, porto_price(@card.price), readonly: true, class: 'form-control' %>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'card.valid_months' %></label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, porto_month(@card.valid_months), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.useable' %></label>
+            <div class="col-sm-6">
+              <%= bay_tags(@card.bay_tags) %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'card.initial_amount' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, card_initial_amount(@card), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', cards_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_card_path(@card), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+  <% if @card.type_stored? %>
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">价格明细</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th></th>
+                <th colspan="2">计时(平日)</th>
+                <th colspan="2">计时(假日)</th>
+                <th colspan="2">计球(平日)</th>
+                <th colspan="2">计球(假日)</th>
+              </tr>
+              <tr>
+                <th>打位</th>
+                <th>会员价</th>
+                <th>门市价</th>
+                <th>会员价</th>
+                <th>门市价</th>
+                <th>会员价</th>
+                <th>门市价</th>
+                <th>会员价</th>
+                <th>门市价</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @card.bay_and_prices.each do |bay_and_prices| %>
+              <tr>
+                <td><%= bay_and_prices[:name] %></td>
+                <% if bay_and_prices[:useable?] %>
+                <% %w(hour bucket).each do |billing_type| %>
+                <% %w(weekday holiday).each do |day_type| %>
+                <td><%= raw(porto_price(bay_and_prices[:"#{day_type}_price_per_#{billing_type}"][:member]).try(:prepend, '<strong class="text-danger">').try(:concat, '</strong>') || '-') %></td>
+                <td>
+                  <% if bay_and_prices[:"#{day_type}_price_per_#{billing_type}"][:member].blank? %>
+                  <%= raw(porto_price(bay_and_prices[:"#{day_type}_price_per_#{billing_type}"][:original]).try(:prepend, '<strong class="text-danger">').try(:concat, '</strong>') || '-') %>
+                  <% else %>
+                  <%= raw(porto_price(bay_and_prices[:"#{day_type}_price_per_#{billing_type}"][:original]).try(:prepend, '<del>').try(:concat, '</del>') || '-') %>
+                  <% end %>
+                </td>
+                <% end %>
+                <% end %>
+                <% else %>
+                <% 8.times do %>
+                <td>不可打</td>
+                <% end %>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '批量设置价格', bulk_new_card_bay_prices_path(@card), class: 'btn btn-primary' %>
+      </div>
+    </section>
+  </div>
+  <% end %>
+</div>

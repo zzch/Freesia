@@ -1,0 +1,21 @@
+<header class="page-header">
+  <h2>更新日志</h2>
+</header>
+<div class="timeline timeline-simple changelog">
+  <div class="tm-body">
+    <ol class="tm-items">
+      <% @changelogs.each do |changelog| %>
+      <li>
+        <div class="tm-box">
+          <h4><%= changelog[:version] %></h4> – <span class="release-date"><%= changelog[:updated_at].strftime('%Y年%m月%d日') %></span>
+          <ul class="list-unstyled">
+            <% changelog[:content].each do |item| %>
+            <li><%= styled_changelog_type(item.to_hash.keys.first) %> - <%= item.to_hash.values.first %></li>
+            <% end %>
+          </ul>
+        </div>
+      </li>
+      <% end %>
+    </ol>
+  </div>
+</div>

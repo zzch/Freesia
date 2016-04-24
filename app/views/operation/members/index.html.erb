@@ -1,0 +1,55 @@
+<header class="page-header">
+  <h2>会籍列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">会籍列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'member.number' %></th>
+                <th><%= porto_arat 'member.holder' %></th>
+                <th><%= porto_arat 'card.type' %></th>
+                <th><%= porto_arat 'card.name' %></th>
+                <th><%= porto_arat 'member.amount' %></th>
+                <th><%= porto_arat 'member.issued_at' %></th>
+                <th><%= porto_arat 'member.expired_at' %></th>
+                <th><%= porto_arat 'member.state' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="9" class="table-paginate"><%= porto_paginate @members %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @members.each do |member| %>
+              <tr>
+                <td><%= member.number %></td>
+                <td><%= member.holder.name %></td>
+                <td><%= te_card_type(member.card.type) %></td>
+                <td><%= member.card.name %></td>
+                <td><%= member_amount(member) %></td>
+                <td><%= porto_date(member.issued_at) %></td>
+                <td><%= porto_date(member.expired_at) %></td>
+                <td><%= member.aasm.human_state %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), member %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_member_path(member) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

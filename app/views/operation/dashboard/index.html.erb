@@ -1,0 +1,129 @@
+<header class="page-header">
+  <h2>控制面板</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6 col-lg-3 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-primary">
+          <a href="<%= url_for(members_path) %>">
+            <div class="panel-body">
+              <div class="widget-summary widget-summary-sm">
+                <div class="widget-summary-col widget-summary-col-icon">
+                  <div class="summary-icon bg-primary">
+                    <i class="fa fa-user"></i>
+                  </div>
+                </div>
+                <div class="widget-summary-col">
+                  <div class="summary">
+                    <h4 class="title">会籍</h4>
+                    <div class="info">
+                      <strong class="amount">281人</strong>
+                      <span class="text-primary">(新增 14人)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </section>
+      </div>
+      <div class="col-md-6 col-lg-3 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-secondary">
+          <div class="panel-body">
+            <div class="widget-summary widget-summary-sm">
+              <div class="widget-summary-col widget-summary-col-icon">
+                <div class="summary-icon bg-secondary">
+                  <i class="fa fa-jpy"></i>
+                </div>
+              </div>
+              <div class="widget-summary-col">
+                <div class="summary">
+                  <h4 class="title">日收入</h4>
+                  <div class="info">
+                    <strong class="amount">14,890元</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="col-md-6 col-lg-3 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-tertiary">
+          <div class="panel-body">
+            <div class="widget-summary widget-summary-sm">
+              <div class="widget-summary-col widget-summary-col-icon">
+                <div class="summary-icon bg-tertiary">
+                  <i class="fa fa-shopping-cart"></i>
+                </div>
+              </div>
+              <div class="widget-summary-col">
+                <div class="summary">
+                  <h4 class="title">日消费</h4>
+                  <div class="info">
+                    <strong class="amount">38单</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="col-md-6 col-lg-3 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-quartenary">
+          <div class="panel-body">
+            <div class="widget-summary widget-summary-sm">
+              <div class="widget-summary-col widget-summary-col-icon">
+                <div class="summary-icon bg-quartenary">
+                  <i class="fa fa-user"></i>
+                </div>
+              </div>
+              <div class="widget-summary-col">
+                <div class="summary">
+                  <h4 class="title">今日访客</h4>
+                  <div class="info">
+                    <strong class="amount">3765</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel">
+      <div class="panel-body">
+        <% Bay.locations.keys.each do |location| %>
+        <% unless @current_club.bays.located(location).blank? %>
+        <h5><span class=""><%= te_bay_location(location.to_sym) %></span></h5>
+        <div class="well well-sm">
+          <div class="row">
+            <% @current_club.bays.located(location).each do |bay| %>
+            <% if bay.occupied? %>
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay.tab, class: 'btn btn-danger btn-block' %></div>
+            <% elsif bay.closed? %>
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay, class: 'btn btn-default btn-block' %></div>
+            <% else %>
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, new_tab_path(bay_ids: [bay.id]), class: 'btn btn-success btn-block' %></div>
+            <% end %>
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+        <% end %>
+        <div class="row">
+          <div class="col-xs-12 text-right">
+            <span class="label label-success">可用</span>
+            <span class="label label-danger">使用中</span>
+            <span class="label label-default">已关闭</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

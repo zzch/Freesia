@@ -1,0 +1,93 @@
+<header class="page-header">
+  <h2>批量创建打位</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @form %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">打位信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @form, url: bulk_create_bays_path, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bays.prefix' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :prefix, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bays.start_number' %> <span class="asterisk">*</span></label></label>
+          <div class="col-sm-6">
+            <%= f.text_field :start_number, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bays.end_number' %> <span class="asterisk">*</span></label></label>
+          <div class="col-sm-6">
+            <%= f.text_field :end_number, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_amat 'operation/bulk_create_bays.suffix' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :suffix, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_arat 'bay.tags' %> <span class="asterisk">*</span></label></label>
+          <div class="col-sm-6">
+            <%= f.select :tag_names, [], {}, multiple: true, data: { role: 'tagsinput', 'tag-class' => 'label label-success' } %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_arat 'bay.location' %> <span class="asterisk">*</span></label></label>
+          <div class="col-sm-6">
+            <%= f.select :location, bay_location_options, {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_hour' %></label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+              <%= f.text_field :weekday_price_per_hour, class: 'form-control' %>
+              <span class="input-group-addon">元</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+              <%= f.text_field :holiday_price_per_hour, class: 'form-control' %>
+              <span class="input-group-addon">元</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= porto_arat 'bay.price_per_bucket' %></label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= porto_arat 'bay.weekday_price' %></span>
+              <%= f.text_field :weekday_price_per_bucket, class: 'form-control' %>
+              <span class="input-group-addon">元</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= porto_arat 'bay.holiday_price' %></span>
+              <%= f.text_field :holiday_price_per_bucket, class: 'form-control' %>
+              <span class="input-group-addon">元</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12 text-center">
+            <%= submit_tag '提交', class: 'btn btn-primary' %>&nbsp;
+            <%= link_to '返回', bays_path, class: 'btn btn-default' %>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

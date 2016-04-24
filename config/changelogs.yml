@@ -1,0 +1,25 @@
+changelogs:
+  - version: 0.1.1
+    updated_at: 2016-04-21
+    content:
+      - added: 手机号码隐藏功能
+  - version: 0.1.0
+    updated_at: 2016-04-20
+    content:
+      - added: 权限管理功能
+  - version: 0.0.3
+    updated_at: 2016-04-18
+    content:
+      - added: 储值卡价格管理功能
+  - version: 0.0.2
+    updated_at: 2016-04-15
+    content:
+      - added: 会籍管理功能
+      - added: 会员管理功能
+      - added: 商品管理功能
+      - added: 页面加载动画效果
+  - version: 0.0.1
+    updated_at: 2016-04-11
+    content:
+      - added: 打位管理功能
+      - added: 会员卡管理功能

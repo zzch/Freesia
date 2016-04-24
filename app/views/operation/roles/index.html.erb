@@ -1,0 +1,44 @@
+<header class="page-header">
+  <h2>用户组列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">用户组列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'role.name' %></th>
+                <th><%= porto_arat 'role.omnipotent' %></th>
+                <th><%= porto_arat 'role.operators' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="table-paginate"><%= porto_paginate @roles %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @roles.each do |role| %>
+              <tr>
+                <td><%= role.name %></td>
+                <td><%= porto_boolean(role.omnipotent) %></td>
+                <td><%= role.operators.count %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), role %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_role_path(role) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+exceptions = %w(
+  PermissionDenied
+  AccountDoesNotExist
+  IncorrectPassword
+  ProhibitedOperator
+  InvalidState
+  DuplicatedPhone
+  DuplicatedName
+  InvalidCard
+  InvalidMember
+  CannotBeBlank
+  DoesNotExist
+  AlreadyInUse
+  InvalidParameter
+  UserNotFound
+  UnactivatedUser
+  IncorrectVerificationCode
+  DuplicatedMembership
+  DuplicatedBay
+  UndeterminedItem
+  InvalidCardType
+  InvalidCharingType
+  InsufficientBall
+  InsufficientMinute
+  InsufficientDeposit
+  InvalidItem
+  InvalidChargingType
+  MemberExists
+  NoUseRights
+  DuplicatedReservation
+  NoPrice
+  NonUniqueMember
+  InvalidBucket
+  InvalidConfirmMethod
+  InvalidUser
+  OriginalPriceNotFound
+  InvalidDiscount
+  FrequentRequest
+  TooManyRequest
+  FullLesson
+  AlreadyReserved
+  OmnipotentRole
+)
+exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

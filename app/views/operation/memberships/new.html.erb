@@ -1,0 +1,112 @@
+<header class="page-header">
+  <h2>创建使用者</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @form %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">用户信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @form,  url: member_memberships_path(@member), html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.card' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @member.card.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.number' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @member.number, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.phone' %> <span class="required">*</span></label>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon">+86</span>
+                <%= f.text_field :phone, data: { 'plugin-masked-input' => 'true', 'input-mask' => '999 - 9999 - 9999' }, placeholder: '___-____-____', class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.name' %> <span class="required">*</span></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_amat 'operation/create_member.last_name' %></span>
+                <%= f.text_field :last_name, class: 'form-control' %>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_amat 'operation/create_member.first_name' %></span>
+                <%= f.text_field :first_name, class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.gender' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <div class="radio-inline radio-custom radio-primary">
+                <%= f.radio_button :gender, :male, checked: true %>
+                <label for="operation_create_membership_gender_male"><%= porto_amat 'operation/create_member.male' %></label>
+              </div>
+              <div class="radio-inline radio-custom radio-danger">
+                <%= f.radio_button :gender, :female %>
+                <label for="operation_create_membership_gender_female"><%= porto_amat 'operation/create_member.female' %></label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', @member, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      uniquenessValidate();
+      $("#operation_create_membership_phone").mask("999 - 9999 - 9999");
+      $("#operation_create_membership_phone").on('change', function() {
+        uniquenessValidate();
+      });
+
+      function uniquenessValidate() {
+        if((new RegExp(/^1[0-9]{2} - [0-9]{4} - [0-9]{4}$/).test($('#operation_create_membership_phone').val()))) {
+          $.ajax({
+            dataType: 'json',
+            url: '/users/async_uniqueness_validate?phone=' + $('#operation_create_membership_phone').val().replace(/[ -]/g, ''),
+            success: function(data) {
+              if(data.found) {
+                $('#operation_create_membership_first_name').val(data.first_name);
+                $('#operation_create_membership_first_name').prop('readOnly', true);
+                $('#operation_create_membership_last_name').val(data.last_name);
+                $('#operation_create_membership_last_name').prop('readOnly', true);
+                $('#operation_create_membership_gender_' + data.gender).prop('checked', 'checked');
+                $('#operation_create_membership_gender_male').prop('disabled', true);
+                $('#operation_create_membership_gender_female').prop('disabled', true);
+                $('#uniqueness_tip').removeClass('hide');
+              } else {
+                $('#operation_create_membership_first_name').val('');
+                $('#operation_create_membership_first_name').prop('readOnly', false);
+                $('#operation_create_membership_last_name').val('');
+                $('#operation_create_membership_last_name').prop('readOnly', false);
+                $('#operation_create_membership_gender_male').prop('readOnly', false);
+                $('#operation_create_membership_gender_female').prop('readOnly', false);
+                $('#uniqueness_tip').addClass('hide');
+              }
+            }
+          });
+        }
+      }
+    });
+  </script>
+<% end %>

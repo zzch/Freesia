@@ -1,0 +1,38 @@
+<header class="page-header">
+  <h2>商品分类列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">商品分类列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-30">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'product_category.name' %></th>
+                <th><%= porto_arat 'product_category.products_count' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @product_categories.each do |product_category| %>
+              <tr>
+                <td><%= product_category.name %></td>
+                <td><%= product_category.products.count %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), product_category %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_product_category_path(product_category) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
