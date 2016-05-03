@@ -1,0 +1,47 @@
+<header class="page-header">
+  <h2>购买商品</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @form %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">商品信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @form, url: create_product_tab_line_items_path(@tab), html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">商品 <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.grouped_collection_select :product_id, @current_club.product_categories, :products, :name, :id, :name, {}, data: { 'plugin-selectTwo' => 'true' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">数量 <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <div data-plugin-spinner data-plugin-options='{ "value":1, "min": 1, "max": 99 }'>
+                <div class="input-group">
+                  <%= f.text_field :quantity, readonly: true, class: 'spinner-input form-control' %>
+                  <div class="spinner-buttons input-group-btn">
+                    <button type="button" class="btn btn-default spinner-up">
+                      <i class="fa fa-angle-up"></i>
+                    </button>
+                    <button type="button" class="btn btn-default spinner-down">
+                      <i class="fa fa-angle-down"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', @tab, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

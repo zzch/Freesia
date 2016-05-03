@@ -3,7 +3,8 @@
 </header>
 <div class="row">
   <div class="col-md-12">
-    <%= render "operation/commons/error_messages", target: @tab %>
+    <%= render "operation/commons/error_messages", target: @member_form %>
+    <%= render "operation/commons/error_messages", target: @visitor_form %>
   </div>
   <div class="col-md-12">
     <section class="panel">
@@ -44,8 +45,8 @@
         <h2 class="panel-title">会员</h2>
       </header>
       <div class="panel-body">
-        <%= form_for @tab, url: member_set_up_tabs_path, html: { id: 'member_set_up', class: 'form-horizontal form-bordered' } do |f| %>
-          <%= hidden_field_tag :'bay_ids', nil %>
+        <%= form_for @member_form, url: member_set_up_tabs_path, html: { id: 'member_set_up', class: 'form-horizontal form-bordered' } do |f| %>
+          <%= f.hidden_field :bay_ids %>
           <div class="form-group">
             <label class="col-sm-3 control-label">会员</label>
             <div class="col-sm-8">
@@ -68,8 +69,8 @@
         <h2 class="panel-title">访客</h2>
       </header>
       <div class="panel-body">
-        <%= form_for @form, url: visitor_set_up_tabs_path, html: { id: 'visitor_set_up', class: 'form-horizontal form-bordered' } do |f| %>
-          <%= hidden_field_tag :'bay_ids', nil %>
+        <%= form_for @visitor_form, url: visitor_set_up_tabs_path, html: { id: 'visitor_set_up', class: 'form-horizontal form-bordered' } do |f| %>
+          <%= f.hidden_field :bay_ids %>
           <div class="form-group">
             <label class="col-sm-3 control-label"><%= porto_amat 'operation/visitor_set_up_tab.phone' %></label>
             <div class="col-sm-8">
@@ -122,14 +123,14 @@
   <script>
     jQuery(document).ready(function(){
       $('#member_set_up').on('submit', function(){
-        setBayIds();
+        setBayIds('member');
       });
       $('#visitor_set_up').on('submit', function(){
-        setBayIds();
+        setBayIds('visitor');
       });
 
-      function setBayIds() {
-        $('input[name=bay_ids]').val($('.bay-item:checked').map(function() {return this.value}).get());
+      function setBayIds(type) {
+        $('input[name=operation_' + type + '_set_up_tab\\[bay_ids\\]]').val($('.bay-item:checked').map(function() {return this.value}).get());
       }
     });
   </script>

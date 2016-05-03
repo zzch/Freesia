@@ -11,6 +11,8 @@ class Club < ActiveRecord::Base
   has_many :members
   has_many :memberships
   has_many :users, -> { distinct }, through: :memberships
+  has_many :tabs
+  has_many :line_items
   has_many :salesmen
   scope :nearby, ->(latitude, longitude) {
     near([latitude, longitude], 5000, unit: :km)

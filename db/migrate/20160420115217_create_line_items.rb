@@ -7,8 +7,11 @@ class CreateLineItems < ActiveRecord::Migration
       t.references :bay
       t.references :product
       t.references :course
+      t.datetime :started_at
+      t.datetime :ended_at
       t.integer :quantity
       t.decimal :amount, precision: 7, scale: 2
+      t.decimal :total_amount, precision: 7, scale: 2
       t.string :name, limit: 200
       t.string :charge_method_cd, limit: 20
       t.string :pay_method_cd, limit: 20

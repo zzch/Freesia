@@ -38,44 +38,25 @@
             <li>
               <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
                 <i class="fa fa-tasks"></i>
-                <span class="badge">3</span>
+                <% unless @progressing_tabs_count_badge.zero? %>
+                <span class="badge"><%= @progressing_tabs_count_badge %></span>
+                <% end %>
               </a>
               <div class="dropdown-menu notification-menu large">
                 <div class="notification-title">
-                  <span class="pull-right label label-default">3</span>
+                  <span class="pull-right label label-default"><%= @progressing_tabs_count_label %></span>
                   消费单
                 </div>
                 <div class="content">
                   <ul>
+                    <% @dropdown_progressing_tabs.each do |progressing_tab| %>
                     <li>
-                      <p class="clearfix mb-xs">
-                        <span class="message pull-left">Generating Sales Report</span>
-                        <span class="message pull-right text-dark">60%</span>
-                      </p>
-                      <div class="progress progress-xs light">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                      </div>
+                      <a href="<%= url_for(progressing_tab) %>" class="clearfix mb-xs">
+                        <span class="message pull-left"><%= progressing_tab.formatted_sequence %></span>
+                        <span class="message pull-right text-dark"><%= porto_time(progressing_tab.entrance_time) %></span>
+                      </a>
                     </li>
-      
-                    <li>
-                      <p class="clearfix mb-xs">
-                        <span class="message pull-left">Importing Contacts</span>
-                        <span class="message pull-right text-dark">98%</span>
-                      </p>
-                      <div class="progress progress-xs light">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100" style="width: 98%;"></div>
-                      </div>
-                    </li>
-      
-                    <li>
-                      <p class="clearfix mb-xs">
-                        <span class="message pull-left">Uploading something big</span>
-                        <span class="message pull-right text-dark">33%</span>
-                      </p>
-                      <div class="progress progress-xs light mb-xs">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%;"></div>
-                      </div>
-                    </li>
+                    <% end %>
                   </ul>
                 </div>
               </div>
@@ -172,6 +153,9 @@
               <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main">
                   <%= porto_nav '控制面板', 'fa fa-home', %w(dashboard), dashboard_path %>
+                  <%= porto_nav '消费单管理', 'fa fa-jpy', %w(tabs line_items) do %>
+                    <li><%= link_to raw('消费单列表'), tabs_path %></li>
+                  <% end %>
                   <%= porto_nav '会员管理', 'fa fa-user', %w(users members) do %>
                     <li><%= link_to raw('会员列表'), users_path %></li>
                     <li><%= link_to raw('会籍列表'), members_path %></li>

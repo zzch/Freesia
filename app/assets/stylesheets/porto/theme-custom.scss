@@ -1100,6 +1100,16 @@ html.dark .wizard-progress .wizard-steps li.active a span {
 .body-error .error-code {
   letter-spacing: -8px;
 }
+.form-bordered .form-group:last-child, .form-bordered .form-group:last-of-type {
+  border-bottom: none !important;
+  padding-bottom: 3px !important;
+  margin-bottom: 3px !important;
+}
+.invoice .bill-data .value {
+  display: inline-block;
+  margin-left: 10px;
+  width: 120px;
+}
 
 /* Custom styles */
 body {
@@ -1119,6 +1129,16 @@ table {
 .permission-item {
   display: inline-block;
   margin-right: 10px;
+}
+table.table-checkout-user {
+  td:first-child {
+    width: 20%;
+    text-align: center;
+    background-color: #fafafa;
+  }
+  td:last-child {
+    width: 80%;
+  }
 }
 @media (min-width: 1200px) {   
   .dashboard-bay-item {

@@ -8,6 +8,7 @@ exceptions = %w(
   DuplicatedName
   InvalidCard
   InvalidMember
+  InvalidBay
   CannotBeBlank
   DoesNotExist
   AlreadyInUse
@@ -40,5 +41,9 @@ exceptions = %w(
   FullLesson
   AlreadyReserved
   OmnipotentRole
+  InvalidTime
+  ProductNotFound
+  CourseNotFound
+  InvalidProduct
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

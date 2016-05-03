@@ -2,6 +2,18 @@ Rails.application.routes.draw do
   scope module: :operation do
     root 'dashboard#index'
     resources :tabs do
+      resources :line_items do
+        collection do
+          get :new_driving
+          get :new_product
+          get :new_course
+          get :new_other
+          post :create_driving
+          post :create_product
+          post :create_course
+          post :create_other
+        end
+      end
       collection do
         get :progressing
         get :cancelled
@@ -9,6 +21,18 @@ Rails.application.routes.draw do
         get :droped
         post :member_set_up
         post :visitor_set_up
+      end
+      member do
+        get :checkout
+      end
+    end
+    resources :line_items do
+      member do
+        patch :async_update_quantity
+        patch :async_update_started_at
+        patch :async_update_ended_at
+        delete :cancel
+        put :finish
       end
     end
     resources :members do

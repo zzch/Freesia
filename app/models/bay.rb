@@ -3,6 +3,7 @@ class Bay < ActiveRecord::Base
   attr_accessor :tag_names
   as_enum :location, [:first_floor, :second_floor, :third_floor, :green, :simulator], prefix: true, map: :string
   belongs_to :club
+  belongs_to :tab
   has_many :taggables, class_name: 'BayTaggable', dependent: :destroy
   has_many :tags, through: :taggables
   aasm column: 'state' do
@@ -13,7 +14,7 @@ class Bay < ActiveRecord::Base
     event :check_in do
       transitions from: :unoccupied, to: :occupied
     end
-    event :check_out do
+    event :check_out, after: :after_check_out do
       transitions from: :occupied, to: :unoccupied
     end
     event :close do
@@ -30,7 +31,6 @@ class Bay < ActiveRecord::Base
   scope :located, ->(location) { where(location_cd: location) }
   validates :name, presence: true, length: { maximum: 10 }, uniqueness: { scope: [:club_id, :location_cd] }
   validates :location, presence: true
-  validates_with BayTagNamesValidator
   validates_with BayPriceValidator
 
   def set_tags
@@ -60,5 +60,9 @@ class Bay < ActiveRecord::Base
           end
         end
       end
+    end
+
+    def after_check_out
+      update!(tab: nil)
     end
 end

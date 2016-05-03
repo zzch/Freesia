@@ -11,11 +11,15 @@ class Member < ActiveRecord::Base
     state :available, initial: true
     state :cancelled
     state :trashed
+    state :expired
     event :cancel, before: :can_be_cancel? do
       transitions from: :available, to: :cancelled
     end
     event :trash do
       transitions from: :available, to: :trashed
+    end
+    event :expire do
+      transitions from: :available, to: :expired
     end
   end
   scope :by_club, ->(club) { where(club_id: club.id) }

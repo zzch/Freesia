@@ -3,7 +3,7 @@ class Operation::BaseController < ApplicationController
   layout 'operation'
   before_action :find_club
   before_action :authenticate
-  # before_action :find_notifications
+  before_action :find_progressing_tabs
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: lambda { |exception| render_error 500, exception }
@@ -30,6 +30,13 @@ class Operation::BaseController < ApplicationController
         render template: "operation/errors/error_403", status: 403
       end
     end
+
+    def find_progressing_tabs
+      progressing_tabs_count = @current_club.tabs.progressing.count
+      @progressing_tabs_count_badge = progressing_tabs_count > 9 ? '..' : progressing_tabs_count
+      @progressing_tabs_count_label = progressing_tabs_count > 99 ? '99+' : progressing_tabs_count
+      @dropdown_progressing_tabs = @current_club.tabs.progressing.limit(5)
+    end
     
     def find_notifications
       @unread_notifications_count = OperatorNotification.by_operator(session['operator']['id']).unread.count
@@ -39,9 +46,5 @@ class Operation::BaseController < ApplicationController
 
     def club_and_operator_and_remarks
       { club_id: @current_club.id, operator_id: @current_operator.id, remarks: params[:remarks] }
-    end
-
-    def convert_picker_to_datetime date, time = nil
-      "#{date} #{time || '00:00:00'}".to_datetime - 8.hours
     end
 end

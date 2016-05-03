@@ -31,6 +31,10 @@ module PortoHelper
     boolean ? '是' : '否'
   end
 
+  def porto_blank value, prompt = '无'
+    value.blank? ? prompt : value
+  end
+
   def porto_flash
     dismiss_btn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
     if flash[:alert]
@@ -56,10 +60,21 @@ module PortoHelper
     "#{number_with_precision(price, precision: 2, strip_insignificant_zeros: true)}元" unless price.blank?
   end
 
-  def porto_seconds total_seconds
-    minutes = ((total_seconds / 60) % 60).round
-    hours = (total_seconds / 60 / 60).floor
-    (hours.zero? ? '' : "#{hours}小时") + (minutes.zero? ? '不足一分钟' : "#{minutes}分钟")
+  def porto_minute total_minutes
+    hours, minutes = (total_minutes / 60).floor, total_minutes % 60
+    if hours.zero?
+      if minutes.zero?
+        '不足一分钟'
+      else
+        "#{minutes}分钟"
+      end
+    else
+      if minutes.zero?
+        "#{hours}小时"
+      else
+        "#{hours}小时#{minutes}分钟"
+      end
+    end
   end
 
   def porto_day date

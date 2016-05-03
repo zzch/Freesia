@@ -16,10 +16,27 @@ class User < ActiveRecord::Base
   end
 
   def name
-    if !last_name.blank? and !first_name.blank?
-      "#{last_name}#{first_name}"
-    else
-      "#{last_name}#{human_gender}"
+    if type_member?
+      if !last_name.blank? and !first_name.blank?
+        "#{last_name}#{first_name}"
+      else
+        "#{last_name}#{formatted_gender}"
+      end
+    elsif type_visitor?
+      if !last_name.blank? and !first_name.blank?
+        "#{last_name}#{first_name}"
+      elsif !last_name.blank? and first_name.blank?
+        "#{last_name}#{formatted_gender}"
+      else
+        '访客'
+      end
+    end
+  end
+
+  def formatted_gender
+    case self.gender
+    when :male then '先生'
+    when :female then '女士'
     end
   end
 

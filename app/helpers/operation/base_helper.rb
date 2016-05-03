@@ -1,8 +1,8 @@
 module Operation::BaseHelper
   def te_user_gender gender
     case gender
-    when :male then '男'
-    when :female then '女'
+    when :male then '先生'
+    when :female then '女士'
     end
   end
 
@@ -79,6 +79,15 @@ module Operation::BaseHelper
     when :by_ball then '粒球'
     when :by_time then '分钟'
     when :stored then '元'
+    end
+  end
+
+  def te_line_item_type type
+    case type
+    when :driving then '打球消费'
+    when :product then '商品消费'
+    when :course then '课程消费'
+    when :other then '其它消费'
     end
   end
 
@@ -264,6 +273,14 @@ module Operation::BaseHelper
     when :by_time then "#{member.minute_amount}分钟"
     when :unlimited then "#{member.remaining_valid_days}天"
     when :stored then porto_price(member.deposit)
+    end
+  end
+
+  def line_item_resource line_item
+    case line_item.type
+    when :product then line_item.product.name
+    when :course then line_item.course.name
+    when :other then line_item.name
     end
   end
 

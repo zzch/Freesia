@@ -1,0 +1,197 @@
+<header class="page-header">
+  <h2>查看消费单</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">消费单信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.sequence' %></label>
+            <div class="col-sm-6">
+              <div class="input-group">
+                <span class="input-group-addon">No.</span>
+                <%= text_field_tag nil, @tab.formatted_sequence, readonly: true, class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.user' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @tab.user.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.state' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @tab.aasm.human_state, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.entrance_time' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_datetime(@tab.entrance_time), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', tabs_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '结账', checkout_tab_path(@tab), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+    <% @tab.line_items.type_drivings.each do |line_item| %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title"><%= line_item.bay.name %>打位</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">开始时间</label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, porto_time(line_item.started_at), data: { 'line-item-id' => line_item.id, 'plugin-timepicker' => 'true', 'plugin-options' => '{ "showMeridian": false }' }, onclick: 'this.select();', class: 'form-control line-item-started-at' %>
+            </div>
+            <label class="col-sm-2 control-label">结束时间</label>
+            <div class="col-sm-2">
+              <% if line_item.ended_at.blank? %>
+              <%= text_field_tag nil, '未结束', readonly: true, class: 'form-control' %>
+              <% else %>
+              <%= text_field_tag nil, porto_time(line_item.ended_at), data: { 'line-item-id' => line_item.id, 'plugin-timepicker' => 'true', 'plugin-options' => '{ "showMeridian": false }' }, onclick: 'this.select();', class: 'form-control line-item-ended-at' %>
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">用球</label>
+            <div class="col-sm-2">
+              <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 99 }'>
+                <div class="input-group mr-xs">
+                  <div class="spinner-buttons input-group-btn">
+                    <button type="button" data-line-item-id="<%= line_item.id %>" class="btn btn-default spinner-up change-quantity">
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+                  <%= text_field_tag :quantity, line_item.quantity, readonly: true, class: "spinner-input form-control line-item-id-#{line_item.id}-quantity" %>
+                  <div class="spinner-buttons input-group-btn">
+                    <button type="button" data-line-item-id="<%= line_item.id %>" class="btn btn-default spinner-down change-quantity">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label class="col-sm-2 control-label">用时</label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, porto_minute(line_item.actual_minutes), data: { 'line-item-id' => line_item.id }, readonly: true, class: 'form-control line-item-actual-minutes' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <% if line_item.ended_at.blank? %>
+        <%= link_to '结束计时', finish_line_item_path(line_item), method: :put, class: 'btn btn-success' %>&nbsp;
+        <% end %>
+        <%= link_to '取消', cancel_line_item_path(line_item), method: :delete, data: { confirm: '确定要取消吗？该操作不可恢复' }, class: 'btn btn-danger' %>&nbsp;
+      </div>
+    </section>
+    <% end %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">消费明细</h2>
+      </header>
+      <div class="panel-body">
+        <% if @tab.line_items.non_drivings.blank? %>
+        <p>无任何消费</p>
+        <% else %>
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'line_item.type' %></th>
+                <th>名称</th>
+                <th><%= porto_arat 'line_item.quantity' %></th>
+                <th><%= porto_arat 'line_item.amount' %></th>
+                <th><%= porto_arat 'line_item.total_amount' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @tab.line_items.non_drivings.each do |line_item| %>
+              <tr>
+                <td><%= te_line_item_type(line_item.type) %></td>
+                <td><%= line_item_resource(line_item) %></td>
+                <td><%= line_item.quantity %></td>
+                <td><%= porto_price(line_item.amount) %></td>
+                <td><%= porto_price(line_item.total_amount) %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-trash-o"></i>'), cancel_line_item_path(line_item), method: :delete, data: { confirm: '确定要取消吗？该操作不可恢复' } %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <div class="btn-group">
+          <%= link_to raw('<i class="fa fa-cart-plus"></i> 商品'), new_product_tab_line_items_path(@tab), class: 'modal-new-product btn btn-primary' %>
+          <%= link_to raw('<i class="fa fa-cart-plus"></i> 课程'), new_course_tab_line_items_path(@tab), class: 'modal-new-course btn btn-success' %>
+          <%= link_to raw('<i class="fa fa-cart-plus"></i> 其它'), new_other_tab_line_items_path(@tab), class: 'modal-new-other btn btn-warning' %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      $('.change-quantity').on('click', function() {
+        $.ajax({
+          type: 'patch',
+          dataType: 'json',
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_quantity?quantity=' + $('.line-item-id-' + $(this).data('line-item-id') + '-quantity').val(),
+          success: function(data) {
+            if (data.result == 'failure') {
+              new PNotify({ type: 'error', title: '出错了', text: '加球数量不能小于0或者大于99' });
+            }
+          }
+        });
+      });
+      $('.line-item-started-at').timepicker().on('changeTime.timepicker', function(e) {
+        $.ajax({
+          context: this,
+          type: 'patch',
+          dataType: 'json',
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_started_at?hour=' + e.time.hours + '&minute=' + e.time.minutes,
+          success: function(data) {
+            if (data.result == 'success') {
+              $('.line-item-actual-minutes[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(data.message.actual_minutes);
+            } else {
+              new PNotify({ type: 'error', title: '出错了', text: '开始时间不能大于结束时间' });
+            }
+          }
+        });
+      });
+      $('.line-item-ended-at').timepicker().on('changeTime.timepicker', function(e) {
+        $.ajax({
+          context: this,
+          type: 'patch',
+          dataType: 'json',
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_ended_at?hour=' + e.time.hours + '&minute=' + e.time.minutes,
+          success: function(data) {
+            if (data.result == 'success') {
+              $('.line-item-actual-minutes[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(data.message.actual_minutes);
+            } else {
+              new PNotify({ type: 'error', title: '出错了', text: '结束时间不能小于开始时间' });
+            }
+          }
+        });
+      });
+    });
+  </script>
+<% end %>

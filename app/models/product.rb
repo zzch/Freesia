@@ -1,5 +1,6 @@
 class Product < ActiveRecord::Base
   include Identifierable, AASM
+  belongs_to :club
   belongs_to :category, class_name: 'ProductCategory'
   validates :category_id, presence: true
   validates :name, presence: true, length: { maximum: 25 }

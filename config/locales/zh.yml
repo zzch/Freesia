@@ -314,9 +314,8 @@ zh:
         state/closed: 已关闭
         state/trashed: 已删除
       tab:
-        sequence: 单号
+        sequence: 消费单号
         bay: 打位
-        operator: 操作员
         user: 用户
         member: 会员
         entrance_time: 入场时间
@@ -328,21 +327,14 @@ zh:
         state/cancelled: 已取消
         state/voided: 已撤销
         created_at: 下单时间
-      playing_item:
+      line_item:
+        type: 类型
+        resource: 资源
         started_at: 开始时间
         finished_at: 结束时间
-        balls: 用球记录
-      product_item:
-        product: 商品名称
-        price: 价格
         quantity: 数量
-        total_price: 小计
-        created_at: 下单时间
-      extra_item:
-        type: 类型
-        price: 价格
-        remarks: 备注
-        created_at: 下单时间
+        amount: 单价
+        total_amount: 小计
       card:
         type: 类型
         name: 名称
@@ -518,3 +510,7 @@ zh:
         holiday_price_per_hour: 每小时假日价
         usual_price_per_bucket: 每筐球平日价
         holiday_price_per_bucket: 每筐球假日价
+      operation/create_other_line_item:
+        name: 名称
+        quantity: 数量
+        amount: 单价

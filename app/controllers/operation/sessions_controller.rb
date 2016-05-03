@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Operation::SessionsController < Operation::BaseController
-  skip_before_filter :authenticate#, :find_notifications
+  skip_before_filter :authenticate, :find_progressing_tabs
   layout null: true
 
   def new

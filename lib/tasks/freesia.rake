@@ -21,8 +21,30 @@ namespace :data do
         latest_time = Time.now
         100.downto(1) do |i|
           latest_time -= rand(3..20).days
-          form = Operation::CreateMember.new(phone: "1#{rand(10..99)}-#{rand(1000..9999)}-#{rand(1000..9999)}", first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, gender: ['male', 'female'].sample, card_id: card.id, actual_price: card.price, number: "V#{i.to_s.rjust(4, '0')}", issued_at: latest_time.strftime('%Y-%m-%d'))
-          Member.create_with_user(club: club, form: form) if form.valid?
+          form = Operation::CreateMember.new(phone: "1#{rand(10..99)}-#{rand(1000..9999)}-#{rand(1000..9999)}", first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, gender: ['male', 'female'].sample, card_id: card.id, actual_price: card.price, actual_valid_months: card.valid_months, number: "V#{i.to_s.rjust(4, '0')}", issued_at: latest_time.strftime('%Y-%m-%d'), remarks: Faker::Lorem.paragraph(10))
+          if form.valid?
+            Member.create_with_user(club: club, form: form)
+          else
+            puts "**** #{form.errors.full_messages}"
+          end
+        end
+        ProductCategory.create!(club: club, name: '饮品').tap do |category|
+          Product.create!([
+            { club: club, category: category, name: '可乐', price: 10 },
+            { club: club, category: category, name: '雪碧', price: 10 },
+            { club: club, category: category, name: '美年达', price: 10 },
+            { club: club, category: category, name: '脉动', price: 20 },
+            { club: club, category: category, name: '红牛', price: 20 }
+          ])
+        end
+        ProductCategory.create!(club: club, name: '简餐').tap do |category|
+          Product.create!([
+            { club: club, category: category, name: '红烧牛肉面', price: 28 },
+            { club: club, category: category, name: '宫保鸡丁盖饭', price: 38 },
+            { club: club, category: category, name: '鱼香肉丝盖饭', price: 38 },
+            { club: club, category: category, name: '卤肉饭', price: 38 },
+            { club: club, category: category, name: '麻辣小龙虾', price: 98 }
+          ])
         end
       end
     end
