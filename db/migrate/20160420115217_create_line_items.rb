@@ -14,7 +14,7 @@ class CreateLineItems < ActiveRecord::Migration
       t.decimal :total_amount, precision: 7, scale: 2
       t.string :name, limit: 200
       t.string :charge_method_cd, limit: 20
-      t.string :pay_method_cd, limit: 20
+      t.references :pay_method
       t.references :member
       t.timestamps null: false
     end

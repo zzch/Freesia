@@ -4,8 +4,33 @@ class LineItem < ActiveRecord::Base
   belongs_to :bay
   belongs_to :product
   belongs_to :course
+  belongs_to :pay_method
+  belongs_to :member
   as_enum :type, [:driving, :product, :course, :other], prefix: true, map: :string
-  scope :non_drivings, -> { where('type_cd <> \'driving\'') }
+  as_enum :charge_method, [:by_ball, :by_time], prefix: true, map: :string
+  scope :driving, -> { where("type_cd = 'driving'") }
+  scope :non_driving, -> { where("type_cd <> 'driving'") }
+
+  def ready_to_check?
+    if self.type_driving?
+      !self.charge_method.blank? and !self.pay_method.blank?
+    else
+      !self.pay_method.blank?
+    end
+  end
+
+  def pay_by_member?
+    %w{ball_member time_member stored_member}.include?(self.pay_method.type.to_s)
+  end
+
+  def content
+    case type
+    when :driving then "#{bay.name}打位"
+    when :product then product.name
+    when :course then course.name
+    when :other then name
+    end
+  end
 
   def actual_minutes
     actual_minutes = (((ended_at || Time.now) - started_at) / 60).round
@@ -13,7 +38,73 @@ class LineItem < ActiveRecord::Base
   end
 
   def charge_minutes
+    if self.charge_method_by_time?
+      if self.actual_minutes < self.tab.minimum_charging_minutes
+        0
+      else
+        if self.actual_minutes <= self.tab.unit_charging_minutes
+          self.tab.unit_charging_minutes
+        else
+          charge_minutes = self.actual_minutes / self.tab.unit_charging_minutes * self.tab.unit_charging_minutes
+          charge_minutes += self.tab.unit_charging_minutes if self.actual_minutes % self.tab.unit_charging_minutes > self.tab.maximum_discard_minutes
+          charge_minutes
+        end
+      end
+    end
+  end
 
+  def driving_total_amount_in_yuan
+    raise InvalidLineItemType.new unless self.type_driving?
+    raise InvalidPayMethod.new if !self.ready_to_check? or %w(ball_member time_member unlimited_member).include?(self.pay_method.type.to_s)
+    day = %w(6 7).include?(Time.now.day) ? 'holiday' : 'weekday'
+    if self.pay_method.type_stored_member?
+      case self.charge_method
+      when :by_ball
+        if bay_price = self.member.card.bay_prices.by_bay(self.bay).first
+          bay_price.send("#{day}_price_per_bucket") * self.quantity
+        else
+          self.bay.send("#{day}_price_per_bucket") * self.quantity
+        end
+      when :by_time
+        (if bay_price = self.member.card.bay_prices.by_bay(self.bay).first.try(:send, "#{day}_price_per_hour")
+          bay_price
+        else
+          self.bay.send("#{day}_price_per_hour")
+        end.to_f / 60 * self.actual_minutes).round
+      end
+    else
+      case self.charge_method
+      when :by_ball
+        self.bay.send("#{day}_price_per_bucket") * self.quantity
+      when :by_time
+        (self.bay.send("#{day}_price_per_hour").to_f / 60 * self.actual_minutes).round
+      end
+    end
+  end
+
+  def update_driving_pay_method form
+    if !form.member_id.blank?
+      member = self.club.members.find(form.member_id)
+      pay_method = PayMethod.by_card_type(member.card.type)
+      update!(charge_method: form.charge_method, member_id: member.id, pay_method_id: pay_method.id)
+    elsif !form.pay_method_id.blank?
+      update!(charge_method: form.charge_method, pay_method_id: form.pay_method_id)
+    else
+      raise InvalidPayMethod.new
+    end
+    self.set_amount_and_total_amount
+  end
+
+  def update_non_driving_pay_method form
+    if !form.member_id.blank?
+      member = self.club.members.find(form.member_id)
+      pay_method = PayMethod.by_card_type(member.card.type)
+      update!(member_id: member.id, pay_method_id: pay_method.id)
+    elsif !form.pay_method_id.blank?
+      update!(pay_method_id: form.pay_method_id)
+    else
+      raise InvalidPayMethod.new
+    end
   end
 
   def update_quantity quantity
@@ -47,6 +138,14 @@ class LineItem < ActiveRecord::Base
 
   def set_amount_and_total_amount
     case type
+    when :driving
+      case pay_method.type
+      when :ball_member then update!(total_amount: self.quantity * self.tab.balls_per_bucket)
+      when :time_member then update!(total_amount: self.actual_minutes)
+      when :stored_member then update!(total_amount: self.driving_total_amount_in_yuan)
+      when :reception then update!(total_amount: self.driving_total_amount_in_yuan)
+      when :non_reception then update!(total_amount: self.driving_total_amount_in_yuan)
+      end
     when :product then update!(amount: product.price, total_amount: product.price * quantity)
     end
   end

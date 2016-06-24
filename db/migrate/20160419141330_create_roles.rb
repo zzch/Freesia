@@ -8,7 +8,7 @@ class CreateRoles < ActiveRecord::Migration
       t.boolean :manage_operator, default: false, null: false
       t.boolean :manage_bay, default: false, null: false
       t.boolean :manage_card, default: false, null: false
-      t.boolean :manage_saleman, default: false, null: false
+      t.boolean :manage_salesman, default: false, null: false
       t.boolean :manage_product, default: false, null: false
       t.boolean :manage_coach, default: false, null: false
       t.boolean :manage_course, default: false, null: false

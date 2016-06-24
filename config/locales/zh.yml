@@ -238,12 +238,12 @@ zh:
         manage_operator: 用户管理
         manage_bay: 打位管理
         manage_card: 会员卡管理
-        manage_saleman: 销售管理
+        manage_salesman: 销售管理
         manage_product: 商品管理
         manage_coach: 教练管理
         manage_course: 课程管理
         create_member: 创建会籍
-        edit_member: 编辑会籍
+        update_member: 编辑会籍
         cancel_member: 注销会籍
         trash_member: 删除会籍
       operator:
@@ -329,12 +329,18 @@ zh:
         created_at: 下单时间
       line_item:
         type: 类型
-        resource: 资源
+        bay: 打位
         started_at: 开始时间
         finished_at: 结束时间
+        actual_time: 实际时间
+        charge_time: 计费时间
+        content: 内容
         quantity: 数量
+        buckets: 筐数
         amount: 单价
         total_amount: 小计
+        pay_method: 付款方式
+        charge_method: 计费方式
       card:
         type: 类型
         name: 名称
@@ -514,3 +520,9 @@ zh:
         name: 名称
         quantity: 数量
         amount: 单价
+      operation/update_driving_line_item_pay_method:
+        charge_method: 计费方式
+        pay_method: 付款方式
+        member: 会籍
+      operation/update_non_driving_line_item_pay_method:
+        pay_method: 付款方式

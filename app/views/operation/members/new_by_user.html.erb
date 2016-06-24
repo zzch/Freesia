@@ -1,54 +1,35 @@
 <header class="page-header">
-  <h2>创建会籍</h2>
+  <h2>增加会籍</h2>
 </header>
 <div class="row">
   <div class="col-md-12">
-    <%= render "operation/commons/error_messages", target: @form %>
+    <%= render "operation/commons/error_messages", target: @member %>
     <section class="panel">
       <header class="panel-heading">
         <h2 class="panel-title">会籍信息</h2>
       </header>
       <div class="panel-body">
-        <%= form_for @form, url: members_path, html: { class: 'form-horizontal form-bordered' } do |f| %>
+        <%= form_for [@user, @member], html: { class: 'form-horizontal form-bordered' } do |f| %>
           <div class="form-group">
-            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.phone' %> <span class="required">*</span></label>
-            <div class="col-sm-4">
-              <div class="input-group">
-                <span class="input-group-addon">+86</span>
-                <%= f.text_field :phone, data: { 'plugin-masked-input' => 'true', 'input-mask' => '999 - 9999 - 9999' }, placeholder: '___-____-____', class: 'form-control' %>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.name' %> <span class="required">*</span></label>
-            <div class="col-sm-2">
-              <div class="input-group">
-                <span class="input-group-addon"><%= porto_amat 'operation/create_member.last_name' %></span>
-                <%= f.text_field :last_name, class: 'form-control' %>
-              </div>
-            </div>
-            <div class="col-sm-2">
-              <div class="input-group">
-                <span class="input-group-addon"><%= porto_amat 'operation/create_member.first_name' %></span>
-                <%= f.text_field :first_name, class: 'form-control' %>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.gender' %> <span class="required">*</span></label>
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.phone' %></label>
             <div class="col-sm-6">
-              <div class="radio-inline radio-custom radio-primary">
-                <%= f.radio_button :gender, :male, checked: true %>
-                <label for="operation_create_member_gender_male"><%= porto_amat 'operation/create_member.male' %></label>
-              </div>
-              <div class="radio-inline radio-custom radio-danger">
-                <%= f.radio_button :gender, :female %>
-                <label for="operation_create_member_gender_female"><%= porto_amat 'operation/create_member.female' %></label>
-              </div>
+              <%= text_field_tag nil, @user.masked_phone, readonly: true, class: 'form-control' %>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-3 control-label"><%= porto_amat 'operation/create_member.card' %> <span class="required">*</span></label>
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @user.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'user.gender' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, te_user_gender(@user.gender), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'member.card' %></label>
             <div class="col-sm-6">
               <%= f.collection_select :card_id, @current_club.cards, :id, :name, {}, data: { 'plugin-selectTwo' => 'true' }, class: 'form-control' %>
             </div>
@@ -115,7 +96,7 @@
           <div class="form-group">
             <div class="col-sm-12 text-center">
               <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
-              <%= link_to '返回', cards_path, class: 'btn btn-default' %>
+              <%= link_to '返回', @member, class: 'btn btn-default' %>
             </div>
           </div>
         <% end %>
@@ -126,55 +107,21 @@
 <% content_for :javascript do %>
   <script>
     jQuery(document).ready(function() {
-      uniquenessValidate();
       asyncFindCard();
-      $("#operation_create_member_phone").mask("999 - 9999 - 9999");
-      $("#operation_create_member_phone").on('change', function() {
-        uniquenessValidate();
-      });
-      $('#operation_create_member_card_id').on('change', function() {
+      $('#member_card_id').on('change', function() {
         asyncFindCard();
       });
-
-      function uniquenessValidate() {
-        if((new RegExp(/^1[0-9]{2} - [0-9]{4} - [0-9]{4}$/).test($('#operation_create_member_phone').val()))) {
-          $.ajax({
-            dataType: 'json',
-            url: '/users/async_uniqueness_validate?phone=' + $('#operation_create_member_phone').val().replace(/[ -]/g, ''),
-            success: function(data) {
-              if(data.found) {
-                $('#operation_create_member_first_name').val(data.first_name);
-                $('#operation_create_member_first_name').prop('readOnly', true);
-                $('#operation_create_member_last_name').val(data.last_name);
-                $('#operation_create_member_last_name').prop('readOnly', true);
-                $('#operation_create_member_gender_' + data.gender).prop('checked', 'checked');
-                $('#operation_create_member_gender_male').prop('disabled', true);
-                $('#operation_create_member_gender_female').prop('disabled', true);
-                $('#uniqueness_tip').removeClass('hide');
-              } else {
-                $('#operation_create_member_first_name').val('');
-                $('#operation_create_member_first_name').prop('readOnly', false);
-                $('#operation_create_member_last_name').val('');
-                $('#operation_create_member_last_name').prop('readOnly', false);
-                $('#operation_create_member_gender_male').prop('readOnly', false);
-                $('#operation_create_member_gender_female').prop('readOnly', false);
-                $('#uniqueness_tip').addClass('hide');
-              }
-            }
-          });
-        }
-      }
 
       function asyncFindCard() {
         $.ajax({
           dataType: 'json',
-          url: '/cards/' + $('#operation_create_member_card_id').val() + '/async_show',
+          url: '/cards/' + $('#member_card_id').val() + '/async_show',
           success: function(data) {
             if (data.result == 'success') {
               $('#original_price').val(data.message.price);
-              $('#operation_create_member_actual_price').val(data.message.price);
+              $('#member_actual_price').val(data.message.price);
               $('#original_valid_months').val(data.message.valid_months);
-              $('#operation_create_member_actual_valid_months').val(data.message.valid_months);
+              $('#member_actual_valid_months').val(data.message.valid_months);
             }
           }
         });

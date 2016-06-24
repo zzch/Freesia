@@ -1,4 +1,4 @@
-class SalemanTransaction < ActiveRecord::Base
+class SalesmanTransaction < ActiveRecord::Base
   include AASM
   belongs_to :club
   belongs_to :member

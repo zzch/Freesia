@@ -16,16 +16,35 @@ namespace :data do
         club.operators.create!(role: Role.omnipotent(club), account: 'wanghao', password: '123456', password_confirmation: '123456', name: '王皓', phone: '13911320927')
         Bay.bulk_create(club: club, form: Operation::BulkCreateBays.new(prefix: 'A', start_number: 1, end_number: 20, tag_names: ['普通打位'], location: :first_floor, weekday_price_per_hour: 108, holiday_price_per_hour: 128))
         Bay.bulk_create(club: club, form: Operation::BulkCreateBays.new(prefix: 'V', start_number: 1, end_number: 6, tag_names: ['VIP打位'], location: :second_floor, weekday_price_per_hour: 228, holiday_price_per_hour: 268))
-        card = Card.create!(club: club, type: :by_time, name: '6000元计时卡', price: 6000, valid_months: 12, bay_tag_ids: ['1'], initial_amount: 168)
+        card = Card.create!(club: club, type: :by_time, name: '6000元计时卡', price: 6000, valid_months: 12, bay_tag_ids: %w{1}, initial_amount: 168)
         card.set_bay_tags
+        Card.create!(club: club, type: :by_ball, name: '8000元计球卡', price: 8000, valid_months: 12, bay_tag_ids: %w{1}, initial_amount: 800).tap do |ball_card|
+          ball_card.set_bay_tags
+        end
+        Card.create!(club: club, type: :stored, name: '10000元储值卡', price: 10000, valid_months: 12, bay_tag_ids: %w{1 2}, initial_amount: 10000).tap do |stored_card|
+          stored_card.set_bay_tags
+        end
         latest_time = Time.now
         100.downto(1) do |i|
           latest_time -= rand(3..20).days
           form = Operation::CreateMember.new(phone: "1#{rand(10..99)}-#{rand(1000..9999)}-#{rand(1000..9999)}", first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, gender: ['male', 'female'].sample, card_id: card.id, actual_price: card.price, actual_valid_months: card.valid_months, number: "V#{i.to_s.rjust(4, '0')}", issued_at: latest_time.strftime('%Y-%m-%d'), remarks: Faker::Lorem.paragraph(10))
           if form.valid?
-            Member.create_with_user(club: club, form: form)
+            Member.create_with_user(club: club, attributes: form)
           else
             puts "**** #{form.errors.full_messages}"
+          end
+        end
+        ball_card_number, stored_card_number = 0, 0
+        User.all.each do |user|
+          if rand(0..2).zero?
+            card = Card.type_by_balls.first
+            ball_card_number += 1
+            Member.create_by_user(club: club, attributes: Member.new(card_id: card.id, actual_price: card.price, actual_valid_months: card.valid_months, number: "B#{ball_card_number.to_s.rjust(4, '0')}", issued_at: Time.now, remarks: Faker::Lorem.paragraph(10)), user: user)
+          end
+          if rand(0..3).zero?
+            card = Card.type_storeds.first
+            stored_card_number += 1
+            Member.create_by_user(club: club, attributes: Member.new(card_id: card.id, actual_price: card.price, actual_valid_months: card.valid_months, number: "C#{stored_card_number.to_s.rjust(4, '0')}", issued_at: Time.now, remarks: Faker::Lorem.paragraph(10)), user: user)
           end
         end
         ProductCategory.create!(club: club, name: '饮品').tap do |category|

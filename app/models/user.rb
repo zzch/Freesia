@@ -63,10 +63,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def send_push options = {}
-    Push.send_by_registration_id(self.registration_id, options)
-  end
-
   class << self
     def initial letter
       all.order(created_at: :desc).select{|user| PinYin.abbr(user.name)[0] == letter}

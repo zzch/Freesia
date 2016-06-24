@@ -1,7 +1,12 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+PayMethod.create!([
+  { type: :ball_member, name: '计球卡' },
+  { type: :time_member, name: '计时卡' },
+  { type: :stored_member, name: '储值卡' },
+  { type: :unlimited_member, name: '畅打卡' },
+  { type: :reception, name: '现金' },
+  { type: :reception, name: '刷卡' },
+  { type: :reception, name: '在线支付' },
+  { type: :non_reception, name: '挂账' },
+  { type: :non_reception, name: '支票' },
+  { type: :non_reception, name: '签单' },
+])

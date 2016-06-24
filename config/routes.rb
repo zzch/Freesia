@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       end
       member do
         get :checkout
+        put :check
       end
     end
     resources :line_items do
@@ -31,6 +32,8 @@ Rails.application.routes.draw do
         patch :async_update_quantity
         patch :async_update_started_at
         patch :async_update_ended_at
+        patch :update_driving_pay_method
+        patch :update_non_driving_pay_method
         delete :cancel
         put :finish
       end
@@ -43,6 +46,7 @@ Rails.application.routes.draw do
       end
     end
     resources :users do
+      resources :members
       collection do
         get :initial
         get :async_uniqueness_validate

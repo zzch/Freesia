@@ -1110,6 +1110,24 @@ html.dark .wizard-progress .wizard-steps li.active a span {
   margin-left: 10px;
   width: 120px;
 }
+.invoice .invoice-items #cell-type {
+  width: 10%;
+}
+.invoice .invoice-items #cell-content {
+  width: 35%;
+}
+.invoice .invoice-items #cell-amount {
+  width: 15%;
+}
+.invoice .invoice-items #cell-quantity {
+  width: 10%;
+}
+.invoice .invoice-items #cell-total-amount {
+  width: 15%;
+}
+.invoice .invoice-items #cell-pay-method {
+  width: 15%;
+}
 
 /* Custom styles */
 body {

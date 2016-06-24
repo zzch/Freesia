@@ -1,8 +1,8 @@
-class CreateSalemanTransactions < ActiveRecord::Migration
+class CreateSalesmanTransactions < ActiveRecord::Migration
   def change
-    create_table :saleman_transactions do |t|
+    create_table :salesman_transactions do |t|
       t.references :club, null: false
-      t.references :saleman, null: false
+      t.references :salesman, null: false
       t.references :member
       t.references :tab
       t.string :type_cd, limit: 20, null: false

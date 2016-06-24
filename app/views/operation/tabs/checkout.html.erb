@@ -1,6 +1,9 @@
 <header class="page-header">
   <h2>收银台</h2>
 </header>
+<%= porto_flash %>
+<%= render "operation/commons/error_messages", target: @driving_form %>
+<%= render "operation/commons/error_messages", target: @non_driving_form %>
 <section class="panel">
   <div class="panel-body">
     <div class="invoice">
@@ -9,6 +12,7 @@
           <div class="col-sm-9 mt-md">
             <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">收银台</h2>
             <h4 class="h4 m-none text-dark text-weight-bold">#<%= @tab.formatted_sequence %></h4>
+            <p class="mt-lg"><%= link_to '返回消费单', @tab %></p>
           </div>
           <div class="col-sm-3 mt-md mb-md">
             <div class="table-responsive">
@@ -20,7 +24,7 @@
                   </tr>
                   <tr>
                     <td><i class="fa fa-phone"></i></td>
-                    <td><%= porto_blank(@tab.user.phone) %></td>
+                    <td><%= porto_blank(@tab.user.masked_phone) %></td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-clock-o"></i></td>
@@ -32,55 +36,95 @@
           </div>
         </div>
       </header>
+      <% unless @tab.line_items.driving.blank? %>
+      <blockquote class="b-thick primary"><h4 class="text-dark">打球消费</h4></blockquote>
       <div class="table-responsive">
-        <table class="table invoice-items">
+        <table class="table table-bordered invoice-items">
           <thead>
-            <tr class="h4 text-dark">
-              <th id="cell-id"     class="text-weight-semibold">#</th>
-              <th id="cell-item"   class="text-weight-semibold">Item</th>
-              <th id="cell-desc"   class="text-weight-semibold">Description</th>
-              <th id="cell-price"  class="text-center text-weight-semibold">Price</th>
-              <th id="cell-qty"    class="text-center text-weight-semibold">Quantity</th>
-              <th id="cell-total"  class="text-center text-weight-semibold">Total</th>
+            <tr class="h5 text-dark">
+              <th id="cell-bay"><%= porto_arat 'line_item.bay' %></th>
+              <th id="cell-actual-time" class="text-center"><%= porto_arat 'line_item.actual_time' %></th>
+              <th id="cell-charge-time" class="text-center"><%= porto_arat 'line_item.charge_time' %></th>
+              <th id="cell-buckets" class="text-center"><%= porto_arat 'line_item.buckets' %></th>
+              <th id="cell-total-amount" class="text-center"><%= porto_arat 'line_item.total_amount' %></th>
+              <th id="cell-charge-method" class="text-center"><%= porto_arat 'line_item.charge_method' %></th>
+              <th id="cell-pay-method" class="text-center"><%= porto_arat 'line_item.pay_method' %></th>
             </tr>
           </thead>
           <tbody>
+            <% @tab.line_items.driving.each do |line_item| %>
             <tr>
-              <td>123456</td>
-              <td class="text-weight-semibold text-dark">Porto HTML5 Template</td>
-              <td>Multipourpouse Website Template</td>
-              <td class="text-center">$14.00</td>
-              <td class="text-center">2</td>
-              <td class="text-center">$28.00</td>
+              <td><%= line_item.bay.name %></td>
+              <td class="text-center"><%= porto_minute(line_item.actual_minutes) %></td>
+              <td class="text-center"><%= porto_minute(line_item.charge_minutes) %></td>
+              <td class="text-center"><%= line_item.quantity %></td>
+              <td class="text-center"><%= driving_line_item_total_amount(line_item) %></td>
+              <% if line_item.ready_to_check? %>
+              <td class="text-center"><%= link_to te_charge_method(line_item.charge_method), "#driving_line_item_#{line_item.id}_modal", class: 'modal-btn' %></td>
+              <td class="text-center"><%= link_to line_item.pay_method.name, "#driving_line_item_#{line_item.id}_modal", class: 'modal-btn' %></td>
+              <% else %>
+              <td class="text-center"><%= link_to '请选择', "#driving_line_item_#{line_item.id}_modal", class: 'modal-btn text-danger' %></td>
+              <td class="text-center"><%= link_to '请选择', "#driving_line_item_#{line_item.id}_modal", class: 'modal-btn text-danger' %></td>
+              <% end %>
             </tr>
-            <tr>
-              <td>654321</td>
-              <td class="text-weight-semibold text-dark">Tucson HTML5 Template</td>
-              <td>Awesome Website Template</td>
-              <td class="text-center">$17.00</td>
-              <td class="text-center">1</td>
-              <td class="text-center">$17.00</td>
-            </tr>
+            <% end %>
           </tbody>
         </table>
       </div>
-    
+      <% end %>
+      <% unless @tab.line_items.non_driving.blank? %>
+      <blockquote class="b-thick primary"><h4 class="text-dark">非打球消费</h4></blockquote>
+      <div class="table-responsive">
+        <table class="table table-bordered invoice-items">
+          <thead>
+            <tr class="h5 text-dark">
+              <th id="cell-type"><%= porto_arat 'line_item.type' %></th>
+              <th id="cell-content"><%= porto_arat 'line_item.content' %></th>
+              <th id="cell-amount" class="text-center"><%= porto_arat 'line_item.amount' %></th>
+              <th id="cell-quantity" class="text-center"><%= porto_arat 'line_item.quantity' %></th>
+              <th id="cell-total-amount" class="text-center"><%= porto_arat 'line_item.total_amount' %></th>
+              <th id="cell-pay-method" class="text-center"><%= porto_arat 'line_item.pay_method' %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tab.line_items.non_driving.each do |line_item| %>
+            <tr>
+              <td class="text-weight-semibold text-dark"><%= te_line_item_type(line_item.type) %></td>
+              <td><%= line_item.content %></td>
+              <td class="text-center"><%= porto_price(line_item.amount) %></td>
+              <td class="text-center"><%= line_item.quantity %></td>
+              <td class="text-center"><%= porto_price(line_item.total_amount) %></td>
+              <% if line_item.ready_to_check? %>
+              <td class="text-center"><%= link_to line_item.pay_method.name, "#non_driving_line_item_#{line_item.id}_modal", class: 'modal-btn' %></td>
+              <% else %>
+              <td class="text-center"><%= link_to '请选择', "#non_driving_line_item_#{line_item.id}_modal", class: 'modal-btn text-danger' %></td>
+              <% end %>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <% end %>
       <div class="invoice-summary">
         <div class="row">
           <div class="col-sm-4 col-sm-offset-8">
             <table class="table h5 text-dark">
               <tbody>
                 <tr class="b-top-none">
-                  <td colspan="2">Subtotal</td>
-                  <td class="text-left">$73.00</td>
+                  <td colspan="2">计时卡</td>
+                  <td class="text-left">0小时</td>
                 </tr>
                 <tr>
-                  <td colspan="2">Shipping</td>
-                  <td class="text-left">$0.00</td>
+                  <td colspan="2">计球卡</td>
+                  <td class="text-left">0粒球</td>
                 </tr>
-                <tr class="h4">
-                  <td colspan="2">Grand Total</td>
-                  <td class="text-left">$73.00</td>
+                <tr>
+                  <td colspan="2">储值卡</td>
+                  <td class="text-left">0元</td>
+                </tr>
+                <tr>
+                  <td colspan="2">前台付</td>
+                  <td class="text-left">0元</td>
                 </tr>
               </tbody>
             </table>
@@ -88,10 +132,128 @@
         </div>
       </div>
     </div>
-
     <div class="text-right mr-lg">
-      <a href="#" class="btn btn-default">Submit Invoice</a>
-      <a href="pages-invoice-print.html" target="_blank" class="btn btn-primary ml-sm"><i class="fa fa-print"></i> Print</a>
+      <%= link_to '返回消费单', @tab, class: 'btn btn-default' %>&nbsp;
+      <% if @tab.ready_to_check? %>
+      <%= link_to '确认', check_tab_path(@tab), method: :put, class: 'btn btn-primary' %>
+      <% else %>
+      <%= link_to '确认', '#', method: :put, disabled: true, class: 'btn btn-muted' %>
+      <% end %>
     </div>
   </div>
 </section>
+<% @tab.line_items.driving.each do |line_item| %>
+  <div id="driving_line_item_<%= line_item.id %>_modal" class="modal-block modal-block-primary mfp-hide">
+    <%= form_for @driving_form, url: update_driving_pay_method_line_item_path(line_item), method: :patch, html: { class: 'form-horizontal form-bordered' } do |f| %>
+      <%= f.hidden_field :bay_id, value: line_item.bay.id %>
+      <section class="panel">
+        <header class="panel-heading">
+          <h2 class="panel-title">付款方式</h2>
+        </header>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.bay' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, line_item.bay.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.actual_time' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, line_item.actual_minutes, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.buckets' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, line_item.quantity, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.charge_method' %></label>
+            <div class="col-sm-6">
+              <div class="radio-inline radio-custom radio-primary mr-md">
+                <%= f.radio_button :charge_method, :by_ball, checked: true %>
+                <label for="line_item_charge_method_by_ball">计球</label>
+              </div>
+              <div class="radio-inline radio-custom radio-primary">
+                <%= f.radio_button :charge_method, :by_time %>
+                <label for="line_item_charge_method_by_time">计时</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.pay_method' %></label>
+            <div class="col-sm-6">
+              <%= f.select :pay_method, pay_method_options(user: @tab.user), {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, style: 'width: 100%;', class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <footer class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <%= f.submit '提交', class: 'btn btn-primary modal-confirm' %>
+              <button class="btn btn-default modal-dismiss">取消</button>
+            </div>
+          </div>
+        </footer>
+      </section>
+    <% end %>
+  </div>
+<% end %>
+<% @tab.line_items.non_driving.each do |line_item| %>
+  <div id="non_driving_line_item_<%= line_item.id %>_modal" class="modal-block modal-block-primary mfp-hide">
+    <%= form_for @non_driving_form, url: update_non_driving_pay_method_line_item_path(line_item), method: :patch, html: { class: 'form-horizontal form-bordered' } do |f| %>
+      <section class="panel">
+        <header class="panel-heading">
+          <h2 class="panel-title">付款方式</h2>
+        </header>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.type' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, te_line_item_type(line_item.type), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.content' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, line_item.content, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.quantity' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, line_item.quantity, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'line_item.pay_method' %></label>
+            <div class="col-sm-6">
+              <%= f.select :pay_method, pay_method_options(user: @tab.user, only_stored: true), {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, style: 'width: 100%;', class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <footer class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <%= f.submit '提交', class: 'btn btn-primary modal-confirm' %>
+              <button class="btn btn-default modal-dismiss">取消</button>
+            </div>
+          </div>
+        </footer>
+      </section>
+    <% end %>
+  </div>
+<% end %>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function(){
+      $('.modal-btn').magnificPopup({
+        type: 'inline',
+        preloader: false,
+        modal: true
+      });
+    });
+  </script>
+<% end %>

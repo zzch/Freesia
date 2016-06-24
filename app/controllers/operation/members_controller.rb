@@ -10,24 +10,44 @@ class Operation::MembersController < Operation::BaseController
   end
 
   def new
-    @form = Operation::CreateMember.new
+    if @user = User.where(id: params[:user_id]).first
+      @member = Member.new
+      render 'new_by_user'
+    else
+      @form = Operation::CreateMember.new
+    end
   end
   
   def edit
   end
 
   def create
-    @form = Operation::CreateMember.new(params[:operation_create_member])
-    if @form.valid?
-      begin
-        @member = Member.create_with_user(club: @current_club, form: @form)
-        redirect_to @member, notice: '操作成功'
-      rescue InvalidCard
-        @form.errors.add(:base, '无效的会员卡')
-        render action: 'new'
+    if @user = User.where(id: params[:user_id]).first
+      @member = Member.new(member_params)
+      if @member.valid?
+        begin
+          @member = Member.create_by_user(club: @current_club, attributes: @member, user: @user)
+          redirect_to @member, notice: '操作成功'
+        rescue InvalidCard
+          @form.errors.add(:base, '无效的会员卡')
+          render action: 'new_by_user'
+        end
+      else
+        render action: 'new_by_user'
       end
     else
-      render action: 'new'
+      @form = Operation::CreateMember.new(params[:operation_create_member])
+      if @form.valid?
+        begin
+          @member = Member.create_with_user(club: @current_club, attributes: @form)
+          redirect_to @member, notice: '操作成功'
+        rescue InvalidCard
+          @form.errors.add(:base, '无效的会员卡')
+          render action: 'new'
+        end
+      else
+        render action: 'new'
+      end
     end
   end
   

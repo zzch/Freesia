@@ -4,7 +4,7 @@ class Role < ActiveRecord::Base
     manage_operator: { operators: [:new, :create, :edit, :update] },
     manage_bay: { bays: [:new, :create, :edit, :update, :bulk_new, :bulk_create] },
     manage_card: { cards: [:new, :create, :edit, :update], bay_prices: [:bulk_new, :bulk_create] },
-    manage_saleman: { salesmen: [:new, :create, :edit, :update] },
+    manage_salesman: { salesmen: [:new, :create, :edit, :update] },
     manage_product: { product_categories: [:new, :create, :edit, :update], products: [:new, :create, :edit, :update] },
     manage_coach: { coaches: [:new, :create, :edit, :update] },
     manage_course: { courses: [:new, :create, :edit, :update] },
@@ -23,7 +23,7 @@ class Role < ActiveRecord::Base
 
   class << self
     def omnipotent club
-      club.roles.where(omnipotent: true).first || create!(club: club, name: '管理员', omnipotent: true, manage_role: true, manage_operator: true, manage_bay: true, manage_card: true, manage_saleman: true, manage_product: true, manage_coach: true, manage_course: true, create_member: true, update_member: true, cancel_member: true, trash_member: true)
+      club.roles.where(omnipotent: true).first || create!(club: club, name: '管理员', omnipotent: true, manage_role: true, manage_operator: true, manage_bay: true, manage_card: true, manage_salesman: true, manage_product: true, manage_coach: true, manage_course: true, create_member: true, update_member: true, cancel_member: true, trash_member: true)
     end
   end
 end

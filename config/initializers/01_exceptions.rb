@@ -18,16 +18,10 @@ exceptions = %w(
   IncorrectVerificationCode
   DuplicatedMembership
   DuplicatedBay
-  UndeterminedItem
-  InvalidCardType
-  InvalidCharingType
-  InsufficientBall
-  InsufficientMinute
   InsufficientDeposit
   InvalidItem
   InvalidChargingType
   MemberExists
-  NoUseRights
   DuplicatedReservation
   NoPrice
   NonUniqueMember
@@ -45,5 +39,9 @@ exceptions = %w(
   ProductNotFound
   CourseNotFound
   InvalidProduct
+  InvalidPayMethod
+  InvalidLineItemType
+  NotReadyToCheck
+  InsufficientBalance
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

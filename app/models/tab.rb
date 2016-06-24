@@ -3,12 +3,13 @@ class Tab < ActiveRecord::Base
   belongs_to :club
   belongs_to :user
   has_many :line_items
+  has_many :bays
   aasm column: 'state' do
     state :progressing, initial: true
     state :cancelled
     state :finished
     state :voided
-    event :check do
+    event :finish do
       transitions from: :progressing, to: :finished
     end
     event :trash do
@@ -18,10 +19,48 @@ class Tab < ActiveRecord::Base
       transitions from: :finished, to: :cancelled
     end
   end
-  before_create :set_sequence, :set_entrance_time
+  before_create :set_sequence, :set_entrance_time, :set_club_configuration
+
+  def ready_to_check?
+    self.line_items.all?(&:ready_to_check?)
+  end
 
   def formatted_sequence
     self.sequence.to_s.rjust(8, '0')
+  end
+
+  def check
+    raise NotReadyToCheck.new unless self.ready_to_check?
+    raise InvalidState.new unless self.progressing?
+    ActiveRecord::Base.transaction do
+      self.lock!
+      self.departure_time = Time.now
+      self.finish
+      self.save!
+      self.bays.each{|bay| bay.update!(tab: nil)}
+      member_expenses = Hash.new(0)
+      self.line_items.each do |line_item|
+        case line_item.pay_method.type
+        when :ball_member
+          member_expenses[line_item.member_id] += line_item.quantity * line_item.tab.balls_per_bucket
+        when :time_member
+          member_expenses[line_item.member_id] += line_item.charge_minutes
+        when :stored_member
+          member_expenses[line_item.member_id] += if line_item.type_driving?
+            line_item.driving_total_amount_in_yuan
+          else
+            line_item.total_amount
+          end
+        end if line_item.pay_by_member?
+      end
+      member_expenses.each do |member_id, amount|
+        Member.find(member_id).tap do |member|
+          raise InsufficientBalance.new if member.amount < amount
+          MemberTransaction.create!(club: self.club, member: member, type: :expenditure, action: :consumption, tab: self, before_amount: member.amount, amount: amount, after_amount: member.amount - amount)
+          member.update!(amount: member.amount - amount)
+        end
+      end
+    end
   end
 
   class << self
@@ -62,5 +101,12 @@ class Tab < ActiveRecord::Base
 
     def set_entrance_time
       self.entrance_time ||= Time.now
+    end
+
+    def set_club_configuration
+      self.balls_per_bucket = self.club.balls_per_bucket
+      self.minimum_charging_minutes = self.club.minimum_charging_minutes
+      self.unit_charging_minutes = self.club.unit_charging_minutes
+      self.maximum_discard_minutes = self.club.maximum_discard_minutes
     end
 end

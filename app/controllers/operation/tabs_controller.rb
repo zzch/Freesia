@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Operation::TabsController < Operation::BaseController
-  before_action :find_tab, only: %w(show checkout)
+  before_action :find_tab, only: %w(show checkout check)
   
   def show
     if @tab.progressing?
@@ -16,7 +16,21 @@ class Operation::TabsController < Operation::BaseController
   end
 
   def checkout
-    
+    @driving_form = Operation::UpdateDrivingLineItemPayMethod.new
+    @non_driving_form = Operation::UpdateNonDrivingLineItemPayMethod.new
+  end
+
+  def check
+    begin
+      @tab.check
+      redirect @tab, notice: '操作成功'
+    rescue NotReadyToCheck
+      redirect_to checkout_tab_path(@tab), alert: '操作失败！存在未确认的消费条目'
+    rescue InvalidState
+      redirect_to checkout_tab_path(@tab), alert: '操作失败！无效的消费单状态！'
+    rescue InsufficientBalance
+      redirect_to checkout_tab_path(@tab), alert: '操作失败！卡余额不足！'
+    end
   end
   
   def new
@@ -42,9 +56,6 @@ class Operation::TabsController < Operation::BaseController
     else
       render action: 'new'
     end
-  end
-
-  def checkout
   end
 
   protected

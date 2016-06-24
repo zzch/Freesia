@@ -109,7 +109,7 @@
             <% elsif bay.closed? %>
             <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay, class: 'btn btn-default btn-block' %></div>
             <% else %>
-            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, new_tab_path(bay_ids: [bay.id]), class: 'btn btn-success btn-block' %></div>
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, new_tab_path(bay_ids: bay.id), class: 'btn btn-success btn-block' %></div>
             <% end %>
             <% end %>
           </div>

@@ -52,16 +52,8 @@ module Operation::BaseHelper
     end
   end
 
-  def te_extra_item_type type
-    case type
-    when :club_rental then '租杆费'
-    when :locker then '存包费'
-    when :other then '其它'
-    end
-  end
-
-  def te_charging_type type
-    case type
+  def te_charge_method charge_method
+    case charge_method
     when :by_ball then '计球'
     when :by_time then '计时'
     end
@@ -84,10 +76,10 @@ module Operation::BaseHelper
 
   def te_line_item_type type
     case type
-    when :driving then '打球消费'
-    when :product then '商品消费'
-    when :course then '课程消费'
-    when :other then '其它消费'
+    when :driving then '打球'
+    when :product then '商品'
+    when :course then '课程'
+    when :other then '其它'
     end
   end
 
@@ -183,6 +175,18 @@ module Operation::BaseHelper
     end.join(' ')
   end
 
+  def driving_line_item_total_amount line_item
+    if line_item.ready_to_check?
+      case line_item.pay_method.type
+      when :ball_member then "#{line_item.quantity * line_item.tab.balls_per_bucket}粒球"
+      when :time_member then "#{line_item.charge_minutes}分钟"
+      else "#{line_item.driving_total_amount_in_yuan}元"
+      end
+    else
+      '-'
+    end
+  end
+
   def styled_changelog_type type
     array = case type
     when 'added' then ['success', '新增']
@@ -190,6 +194,11 @@ module Operation::BaseHelper
     when 'fixed' then ['danger', '修复']
     end
     raw("<span class=\"label label-#{array[0]}\">#{array[1]}</span>")
+  end
+
+  def pay_method_options options = {}
+    ((((options[:only_stored] || false) ? options[:user].members.by_club(@current_club).stored_cards : options[:user].members.by_club(@current_club)).map{|member| ["#{member.number} #{member.card.name}", "member_id_#{member.id}"]}) || []) +
+    PayMethod.without_member(@current_club).map{|pay_method| [pay_method.name, "pay_method_id_#{pay_method.id}"]}
   end
 
   def styled_payment_method_tag item

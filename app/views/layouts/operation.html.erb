@@ -52,8 +52,8 @@
                     <% @dropdown_progressing_tabs.each do |progressing_tab| %>
                     <li>
                       <a href="<%= url_for(progressing_tab) %>" class="clearfix mb-xs">
-                        <span class="message pull-left"><%= progressing_tab.formatted_sequence %></span>
-                        <span class="message pull-right text-dark"><%= porto_time(progressing_tab.entrance_time) %></span>
+                        <span class="message pull-left">#<%= progressing_tab.formatted_sequence %> <%= progressing_tab.user.name %></span>
+                        <span class="message pull-right text-dark"><%= porto_time(progressing_tab.entrance_time) %>入场</span>
                       </a>
                     </li>
                     <% end %>

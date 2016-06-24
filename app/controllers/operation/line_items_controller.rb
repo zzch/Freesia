@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Operation::LineItemsController < Operation::BaseController
-  before_action :find_line_item, only: %w(async_update_quantity async_update_started_at async_update_ended_at cancel finish)
+  before_action :find_line_item, only: %w(update_driving_pay_method update_non_driving_pay_method async_update_quantity async_update_started_at async_update_ended_at cancel finish)
   before_action :find_tab, only: %w(new_driving new_product new_course new_other create_driving create_product create_course create_other)
 
   def new_driving
@@ -44,6 +44,30 @@ class Operation::LineItemsController < Operation::BaseController
       redirect_to @tab, notice: '操作成功'
     else
       render action: 'new_other'
+    end
+  end
+
+  def update_driving_pay_method
+    @tab = @line_item.tab
+    @driving_form = Operation::UpdateDrivingLineItemPayMethod.new(params[:operation_update_driving_line_item_pay_method])
+    if @driving_form.valid?
+      @line_item.update_driving_pay_method(@driving_form)
+      redirect_to checkout_tab_path(@tab), notice: '操作成功'
+    else
+      @non_driving_form = Operation::UpdateNonDrivingLineItemPayMethod.new
+      render template: 'operation/tabs/checkout'
+    end
+  end
+
+  def update_non_driving_pay_method
+    @tab = @line_item.tab
+    @non_driving_form = Operation::UpdateNonDrivingLineItemPayMethod.new(params[:operation_update_non_driving_line_item_pay_method])
+    if @non_driving_form.valid?
+      @line_item.update_non_driving_pay_method(@non_driving_form)
+      redirect_to checkout_tab_path(@tab), notice: '操作成功'
+    else
+      @driving_form = Operation::UpdateDrivingLineItemPayMethod.new
+      render template: 'operation/tabs/checkout'
     end
   end
 

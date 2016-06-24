@@ -57,23 +57,27 @@ module PortoHelper
   end
 
   def porto_price price
-    "#{number_with_precision(price, precision: 2, strip_insignificant_zeros: true)}元" unless price.blank?
+    price.blank? ? '-' : "#{number_with_precision(price, precision: 2, strip_insignificant_zeros: true)}元" 
   end
 
   def porto_minute total_minutes
-    hours, minutes = (total_minutes / 60).floor, total_minutes % 60
-    if hours.zero?
-      if minutes.zero?
-        '不足一分钟'
+    if total_minutes
+      hours, minutes = (total_minutes / 60).floor, total_minutes % 60
+      if hours.zero?
+        if minutes.zero?
+          '不足一分钟'
+        else
+          "#{minutes}分钟"
+        end
       else
-        "#{minutes}分钟"
+        if minutes.zero?
+          "#{hours}小时"
+        else
+          "#{hours}小时#{minutes}分钟"
+        end
       end
     else
-      if minutes.zero?
-        "#{hours}小时"
-      else
-        "#{hours}小时#{minutes}分钟"
-      end
+      '-'
     end
   end
 

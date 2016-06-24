@@ -44,7 +44,7 @@
         <%= link_to '结账', checkout_tab_path(@tab), class: 'btn btn-primary' %>&nbsp;
       </div>
     </section>
-    <% @tab.line_items.type_drivings.each do |line_item| %>
+    <% @tab.line_items.driving.each do |line_item| %>
     <section class="panel">
       <header class="panel-heading">
         <h2 class="panel-title"><%= line_item.bay.name %>打位</h2>
@@ -101,10 +101,10 @@
     <% end %>
     <section class="panel">
       <header class="panel-heading">
-        <h2 class="panel-title">消费明细</h2>
+        <h2 class="panel-title">商品消费</h2>
       </header>
       <div class="panel-body">
-        <% if @tab.line_items.non_drivings.blank? %>
+        <% if @tab.line_items.non_driving.blank? %>
         <p>无任何消费</p>
         <% else %>
         <div class="table-responsive">
@@ -120,7 +120,7 @@
               </tr>
             </thead>
             <tbody>
-              <% @tab.line_items.non_drivings.each do |line_item| %>
+              <% @tab.line_items.non_driving.each do |line_item| %>
               <tr>
                 <td><%= te_line_item_type(line_item.type) %></td>
                 <td><%= line_item_resource(line_item) %></td>

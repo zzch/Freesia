@@ -2,6 +2,7 @@ class BayPrice < ActiveRecord::Base
   belongs_to :club
   belongs_to :card
   belongs_to :bay
+  scope :by_bay, ->(bay) { where(bay_id: bay.id) }
 
   class << self
     def bulk_create options = {}
