@@ -121,3 +121,49 @@
     </section>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">最近消费记录</h2>
+      </header>
+      <div class="panel-body">
+        <% if @member.member_transactions.blank? %>
+        <p>无任何消费记录</p>
+        <% else %>
+        <div class="table-responsive">
+          <table class="table table-striped mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'member_transaction.created_at' %></th>
+                <th><%= porto_arat 'member_transaction.type' %></th>
+                <th><%= porto_arat 'member_transaction.action' %></th>
+                <th><%= porto_arat 'member_transaction.tab' %></th>
+                <th><%= porto_arat 'member_transaction.before_amount' %></th>
+                <th><%= porto_arat 'member_transaction.amount' %></th>
+                <th><%= porto_arat 'member_transaction.after_amount' %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @member.member_transactions.each do |member_transaction| %>
+              <tr>
+                <td><%= porto_datetime(member_transaction.created_at) %></td>
+                <td><%= te_member_transaction_type(member_transaction.type) %></td>
+                <td><%= te_member_transaction_action(member_transaction.action) %></td>
+                <td><%= member_transaction.tab ? link_to("##{member_transaction.tab.sequence}", member_transaction.tab, target: '_blank') : '-' %></td>
+                <td><%= member_transaction_amount(member_transaction, :before) %></td>
+                <td><%= member_transaction_amount(member_transaction, :current) %></td>
+                <td><%= member_transaction_amount(member_transaction, :after) %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '全部消费记录', member_member_transactions_path(@member), class: 'btn btn-primary' %>
+      </div>
+    </section>
+  </div>
+</div>

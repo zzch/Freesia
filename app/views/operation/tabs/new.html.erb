@@ -3,10 +3,7 @@
 </header>
 <div class="row">
   <div class="col-md-12">
-    <%= render "operation/commons/error_messages", target: @member_form %>
-    <%= render "operation/commons/error_messages", target: @visitor_form %>
-  </div>
-  <div class="col-md-12">
+    <%= porto_flash %>
     <section class="panel">
       <header class="panel-heading">
         <h2 class="panel-title">打位信息</h2>
@@ -24,7 +21,7 @@
                 <% @current_club.bays.located(location).each do |bay| %>
                 <div class="col-sm-2">
                   <div class="checkbox-inline checkbox-custom checkbox-default">
-                    <%= check_box_tag :bay_ids, bay.id, (params[:bay_ids].try(:include?, "#{bay.id}")), id: "bay_id_#{bay.id}", name: 'bay', disabled: (bay.occupied? or bay.closed?), class: 'bay-item' %>
+                    <%= check_box_tag :bay_ids, bay.id, (params[:bay_ids].split(',').try(:include?, "#{bay.id}")), id: "bay_id_#{bay.id}", name: 'bay', disabled: (bay.occupied? or bay.closed?), class: 'bay-item' %>
                     <label for="bay_id_<%= bay.id %>"><%= bay.name %></label>
                   </div>
                 </div>

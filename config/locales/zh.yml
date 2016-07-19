@@ -363,18 +363,6 @@ zh:
         state/on_sale: 销售中
         state/discontinued: 已停售
         state/out_of_stock: 缺货
-      member_expense:
-        created_at: 时间
-        type: 类型
-        item: 内容
-        amount: 额度
-      transaction_record:
-        created_at: 时间
-        operator: 操作员
-        type: 类型
-        action: 子类型
-        tab: 消费单
-        remarks: 备注
       card_bay_price:
         bay: 打位
       reservation:
@@ -463,6 +451,14 @@ zh:
         name: 姓名
         phone: 手机号码
         receive_sms: 是否接收短信
+      member_transaction:
+        type: 类型
+        action: 子类型
+        tab: 消费单
+        before_amount: 变化前额度
+        amount: 额度
+        after_amount: 变化后额度
+        created_at: 操作时间
       service_exception:
         module: 模块
         message: 错误信息
@@ -484,6 +480,7 @@ zh:
         original_valid_months: 原有效期
         actual_valid_months: 实际有效期
         number: 卡号
+        latest_number: 最近办理
         issued_at: 办理日期
         salesman: 销售
         remarks: 备注

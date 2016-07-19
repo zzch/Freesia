@@ -1,0 +1,131 @@
+<!doctype html>
+<html class="fixed sidebar-dark sidebar-left-sm">
+  <head>
+    <meta charset="UTF-8">
+    <title>练球宝 - 高尔夫练习场服务云平台</title>
+    <meta name="description" content="练球宝 - 高尔夫练习场服务云平台">
+    <meta name="author" content="Beijing iSports Co., Ltd.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <%= stylesheet_link_tag 'porto', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'modernizr', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body data-loading-overlay class="loading-overlay-showing">
+    <span class="loading-overlay light"> 
+      <span class="loader black"></span> 
+    </span>
+    <section class="body">
+      <header class="header">
+        <div class="logo-container">
+          <a href="/" class="logo">
+            <%= image_tag('porto/logo.png', height: 35) %>
+          </a>
+          <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+            <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+          </div>
+        </div>
+        <div class="header-right">
+          <form action="pages-search-results.html" class="search nav-form">
+            <div class="input-group input-search">
+              <input type="text" class="form-control" name="q" id="q" placeholder="搜索...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+          <span class="separator"></span>
+          <div id="userbox" class="userbox">
+            <a href="#" data-toggle="dropdown">
+              <figure class="profile-picture">
+                <%= image_tag('porto/portrait-default.png') %>
+              </figure>
+              <div class="profile-info" data-lock-name="><%= @current_administrator.name %>">
+                <span class="name"><%= @current_administrator.name %></span>
+                <span class="role">管理员</span>
+              </div>
+              <i class="fa custom-caret"></i>
+            </a>
+            <div class="dropdown-menu">
+              <ul class="list-unstyled">
+                <li class="divider"></li>
+                <li>
+                  <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> 我的信息</a>
+                </li>
+                <li>
+                  <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-cog"></i> 修改密码</a>
+                </li>
+                <li>
+                  <%= link_to raw('<i class="fa fa-power-off"></i> 退出登录'), sign_out_path, role: 'menuitem', tabindex: '-1' %>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="inner-wrapper">
+        <aside id="sidebar-left" class="sidebar-left">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              导航栏
+            </div>
+            <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+              <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+            </div>
+          </div>
+          <div class="nano">
+            <div class="nano-content">
+              <nav id="menu" class="nav-main" role="navigation">
+                <ul class="nav nav-main">
+                  <%= porto_nav '控制面板', 'fa fa-home', %w(dashboard), admin_dashboard_path %>
+                  <%= porto_nav '球场管理', 'fa fa-compass', %w(clubs) do %>
+                    <li><%= link_to raw('球场列表'), admin_clubs_path %></li>
+                    <li><%= link_to raw('创建球场'), new_admin_club_path %></li>
+                  <% end %>
+                  <%= porto_nav '加球机管理', 'fa fa-gear', %w(machines) do %>
+                    <li><%= link_to raw('加球机列表'), admin_machines_path %></li>
+                    <li><%= link_to raw('创建加球机'), new_admin_machine_path %></li>
+                  <% end %>
+                </ul>
+              </nav>
+            </div>
+            <script>
+              if (typeof localStorage !== 'undefined') {
+                if (localStorage.getItem('sidebar-left-position') !== null) {
+                  var initialPosition = localStorage.getItem('sidebar-left-position'),
+                    sidebarLeft = document.querySelector('#sidebar-left .nano-content');
+                  sidebarLeft.scrollTop = initialPosition;
+                }
+              }
+            </script>
+          </div>
+        </aside>
+        <section role="main" class="content-body">
+          <%= yield %>
+        </section>
+      </div>
+      <aside id="sidebar-right" class="sidebar-right">
+        <div class="nano">
+          <div class="nano-content">
+            <a href="#" class="mobile-close visible-xs">
+              Collapse <i class="fa fa-chevron-right"></i>
+            </a>
+            <div class="sidebar-right-wrapper">
+              <div class="sidebar-widget widget-calendar">
+                <h6>Upcoming Tasks</h6>
+                <div data-plugin-datepicker data-plugin-skin="dark" ></div>
+                <ul>
+                  <li>
+                    <time datetime="2014-04-19T00:00+00:00">04/19/2014</time>
+                    <span>Company Meeting</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+    <%= javascript_include_tag 'porto', 'data-turbolinks-track' => true %>
+    <%= content_for :javascript %>
+  </body>
+</html>

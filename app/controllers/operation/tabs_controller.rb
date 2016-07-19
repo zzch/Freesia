@@ -1,29 +1,28 @@
 # -*- encoding : utf-8 -*-
 class Operation::TabsController < Operation::BaseController
-  before_action :find_tab, only: %w(show checkout check)
+  before_action :find_tab, only: %w(show checkout check trash_confirmation trash cancel_confirmation cancel)
   
   def show
     if @tab.progressing?
       render 'progressing_show'
     else
-      @playing_items = @tab.playing_items.includes(:balls).includes(:vacancy)
-      @provision_items = @tab.provision_items
-      @extra_items = @tab.extra_items
-      @members = @tab.user.members.by_club(@current_club).includes(:card)
-      @stored_card_members = @members.select{|member| member.card.type_stored?}
-      render 'finished_show'
+      render 'show'
     end
   end
 
   def checkout
-    @driving_form = Operation::UpdateDrivingLineItemPayMethod.new
-    @non_driving_form = Operation::UpdateNonDrivingLineItemPayMethod.new
+    if @tab.progressing? and @tab.ready_to_cast_accounts?
+      @driving_form = Operation::UpdateDrivingLineItemPayMethod.new
+      @non_driving_form = Operation::UpdateNonDrivingLineItemPayMethod.new
+    else
+      redirect_to @tab
+    end
   end
 
   def check
     begin
       @tab.check
-      redirect @tab, notice: '操作成功'
+      redirect_to @tab, notice: '操作成功'
     rescue NotReadyToCheck
       redirect_to checkout_tab_path(@tab), alert: '操作失败！存在未确认的消费条目'
     rescue InvalidState
@@ -44,7 +43,7 @@ class Operation::TabsController < Operation::BaseController
       @tab = Tab.set_up_as_member(club: @current_club, form: @form)
       redirect_to @tab, notice: '操作成功'
     else
-      render action: 'new'
+      redirect_to new_tab_path(bay_ids: params[:operation_member_set_up_tab][:bay_ids]), alert: '操作失败，未选择会员'
     end
   end
 
@@ -55,6 +54,39 @@ class Operation::TabsController < Operation::BaseController
       redirect_to @tab, notice: '操作成功'
     else
       render action: 'new'
+    end
+  end
+
+  def trash_confirmation
+  end
+
+  def trash
+    begin
+      @tab.trash!
+      BehaviorTransaction.trash_tab(club_and_operator_and_remarks.merge(tab: @tab))
+      redirect_to dashboard_path, notice: '操作成功'
+    rescue AASM::InvalidTransition
+      redirect_to @tab, alert: '操作失败，无效的消费单状态'
+    end
+  end
+
+  def cancel_confirmation
+  end
+
+  def cancel
+    begin
+      refund_amount = params[:refund_amount].to_f
+      raise AmountCanNotBeNegetive.new if refund_amount < 0
+      raise RefundAmountCanNotBeGreaterThanActualPrice.new if refund_amount > @tab.total_amount_in_reception
+      @tab.cancel_and_refund(refund_amount)
+      BehaviorTransaction.cancel_tab(club_and_operator_and_remarks.merge(tab: @tab))
+      redirect_to @tab, notice: '操作成功'
+    rescue InvalidState
+      redirect_to cancel_confirmation_tab_path(@tab), alert: '操作失败，无效的消费单状态'
+    rescue AmountCanNotBeNegetive
+      redirect_to cancel_confirmation_tab_path(@tab), alert: '操作失败，退款金额不能小于0'
+    rescue RefundAmountCanNotBeGreaterThanActualPrice
+      redirect_to cancel_confirmation_tab_path(@tab), alert: '操作失败，退款金额不能大于实际付款'
     end
   end
 

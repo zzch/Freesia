@@ -2,7 +2,7 @@ class BehaviorTransaction < ActiveRecord::Base
   belongs_to :club
   belongs_to :operator
   as_enum :resource, [:bay, :card, :member, :tab], prefix: true, map: :string
-  as_enum :action, [:create, :update, :destroy, :cancel], prefix: true, map: :string
+  as_enum :action, [:create, :update, :destroy, :trash, :cancel], prefix: true, map: :string
 
   class << self
     def cancel_member options = {}
@@ -10,7 +10,15 @@ class BehaviorTransaction < ActiveRecord::Base
     end
 
     def trash_member options = {}
-      base_create(extract_base_attributes(options).merge(primary_resource_id: options[:member].id, resource: :member, action: :destroy))
+      base_create(extract_base_attributes(options).merge(primary_resource_id: options[:member].id, resource: :member, action: :trash))
+    end
+
+    def trash_tab options = {}
+      base_create(extract_base_attributes(options).merge(primary_resource_id: options[:tab].id, resource: :tab, action: :trash))
+    end
+
+    def cancel_tab options = {}
+      base_create(extract_base_attributes(options).merge(primary_resource_id: options[:tab].id, resource: :tab, action: :cancel))
     end
 
     def extract_base_attributes options

@@ -41,7 +41,12 @@
       </div>
       <div class="panel-footer">
         <%= link_to '返回', tabs_path, class: 'btn btn-default' %>&nbsp;
+        <% if @tab.ready_to_cast_accounts? %>
         <%= link_to '结账', checkout_tab_path(@tab), class: 'btn btn-primary' %>&nbsp;
+        <% else %>
+        <%= link_to '结账', 'javascript:return false;', disabled: true, class: 'btn btn-primary' %>&nbsp;
+        <% end %>
+        <%= link_to '删除', trash_confirmation_tab_path(@tab), class: 'btn btn-danger' %>&nbsp;
       </div>
     </section>
     <% @tab.line_items.driving.each do |line_item| %>
@@ -94,6 +99,7 @@
       <div class="panel-footer">
         <% if line_item.ended_at.blank? %>
         <%= link_to '结束计时', finish_line_item_path(line_item), method: :put, class: 'btn btn-success' %>&nbsp;
+        <%= link_to '更换打位', edit_bay_line_item_path(line_item), class: 'btn btn-primary' %>&nbsp;
         <% end %>
         <%= link_to '取消', cancel_line_item_path(line_item), method: :delete, data: { confirm: '确定要取消吗？该操作不可恢复' }, class: 'btn btn-danger' %>&nbsp;
       </div>

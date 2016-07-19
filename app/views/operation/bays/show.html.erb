@@ -69,6 +69,11 @@
       <div class="panel-footer">
         <%= link_to '返回', bays_path, class: 'btn btn-default' %>&nbsp;
         <%= link_to '编辑', edit_bay_path(@bay), class: 'btn btn-primary' %>&nbsp;
+        <% if @bay.closed? %>
+        <%= link_to '开放', open_bay_path(@bay), method: :put, data: { confirm: '确定要开放该打位吗？' }, class: 'btn btn-success' %>&nbsp;
+        <% else %>
+        <%= link_to '关闭', close_bay_path(@bay), method: :put, data: { confirm: '确定要关闭该打位吗？' }, class: 'btn btn-danger' %>&nbsp;
+        <% end %>
       </div>
     </section>
   </div>

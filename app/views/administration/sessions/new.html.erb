@@ -1,0 +1,67 @@
+<!doctype html>
+<html class="fixed sidebar-dark sidebar-left-sm">
+  <head>
+    <meta charset="UTF-8">
+    <title>练球宝 - 高尔夫练习场服务云平台</title>
+    <meta name="description" content="练球宝 - 高尔夫练习场服务云平台">
+    <meta name="author" content="Beijing iSports Co., Ltd.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <%= stylesheet_link_tag 'porto', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'modernizr', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <section class="body-sign">
+      <div class="center-sign">
+        <a href="/" class="logo pull-left">
+          <%= image_tag 'porto/logo.png', height: 54 %>
+        </a>
+        <div class="panel panel-sign">
+          <div class="panel-title-sign mt-xl text-right">
+            <h2 class="title text-uppercase text-weight-bold m-none">管理后台</h2>
+          </div>
+          <div class="panel-body">
+            <%= form_tag admin_sign_in_path, method: :post do %>
+              <div class="form-group mb-lg">
+                <label>账号</label>
+                <div class="input-group input-group-icon">
+                  <%= text_field_tag :account, nil, class: 'form-control input-lg', placeholder: '请输入账号' %>
+                  <span class="input-group-addon">
+                    <span class="icon icon-lg">
+                      <i class="fa fa-user"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group mb-lg">
+                <div class="clearfix">
+                  <label class="pull-left">密码</label>
+                  <a href="pages-recover-password.html" class="pull-right">忘记密码?</a>
+                </div>
+                <div class="input-group input-group-icon">
+                  <%= password_field_tag :password, nil, class: 'form-control input-lg', placeholder: '请输入密码' %>
+                  <span class="input-group-addon">
+                    <span class="icon icon-lg">
+                      <i class="fa fa-lock"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <p class="mt5 mb20 text-danger"><%= flash[:alert] %></p>
+                </div>
+                <div class="col-sm-4 text-right">
+                  <%= submit_tag '登录', class: 'btn btn-primary hidden-xs' %>
+                  <%= submit_tag '登录', class: 'btn btn-primary btn-block btn-lg visible-xs mt-lg' %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <p class="text-center text-muted mt-md mb-md">Beijing iSports Co., Ltd. &copy; 2014 - 2016. All Rights Reserved.</p>
+      </div>
+    </section>
+    <%= javascript_include_tag 'porto', 'data-turbolinks-track' => true %>
+  </body>
+</html>

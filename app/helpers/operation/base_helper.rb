@@ -88,7 +88,7 @@ module Operation::BaseHelper
   end
 
   def bay_options
-    @current_club.vacancies.map{|bay| ["#{te_bay_location(bay.location)} | #{bay.name}", bay.id]}
+    @current_club.bays.unoccupied.map{|bay| ["#{te_bay_location(bay.location)} | #{bay.name}", bay.id]}
   end
 
   def coach_options
@@ -107,14 +107,8 @@ module Operation::BaseHelper
     @current_club.salesmen.map{|salesman| ["#{PinYin.abbr(salesman.name).upcase} | #{salesman.name}", salesman.id]}
   end
 
-  def extra_item_type_options
-    ExtraItem.types.keys.map do |type|
-      [(case type
-      when 'club_rental' then '租杆费'
-      when 'locker' then '存包费'
-      when 'other' then '其它'
-      end), type]
-    end
+  def machine_model_options
+    [['16年7月', :v1]]
   end
 
   def card_type_options
@@ -201,90 +195,6 @@ module Operation::BaseHelper
     PayMethod.without_member(@current_club).map{|pay_method| [pay_method.name, "pay_method_id_#{pay_method.id}"]}
   end
 
-  def styled_payment_method_tag item
-    if item.payment_method.blank?
-      '请选择'
-    else
-      raw('<span class="label label-primary">' +
-      if item.try(:payment_method_by_ball_member?)
-        '计球卡'
-      elsif item.try(:payment_method_by_time_member?)
-        '计时卡'
-      elsif item.try(:payment_method_unlimited_member?)
-        '畅打卡'
-      elsif item.payment_method_stored_member?
-        '储值卡'
-      elsif item.payment_method_credit_card?
-        '信用卡'
-      elsif item.payment_method_cash?
-        '现金'
-      elsif item.payment_method_check?
-        '支票'
-      elsif item.payment_method_on_account?
-        '挂账'
-      elsif item.payment_method_signing?
-        '签单'
-      elsif item.payment_method_coupon?
-        '抵用卷'
-      end + '</span>')
-    end
-  end
-
-  def payment_method_tag item
-    if item.try(:payment_method_by_ball_member?)
-      '计球卡'
-    elsif item.try(:payment_method_by_time_member?)
-      '计时卡'
-    elsif item.try(:payment_method_unlimited_member?)
-      '畅打卡'
-    elsif item.payment_method_stored_member?
-      '储值卡'
-    elsif item.payment_method_credit_card?
-      '信用卡'
-    elsif item.payment_method_cash?
-      '现金'
-    elsif item.payment_method_check?
-      '支票'
-    elsif item.payment_method_on_account?
-      '挂账'
-    elsif item.payment_method_signing?
-      '签单'
-    elsif item.payment_method_coupon?
-      '抵用卷'
-    end
-  end
-
-  def minutes_by_time options = {}
-    if options[:minutes] < options[:club].minimum_charging_minutes
-      0
-    else
-      unit_minutes = options[:minutes] / options[:club].unit_charging_minutes
-      unit_minutes += 1 if unit_minutes.zero?
-      unit_minutes += 1 if options[:minutes] > options[:club].unit_charging_minutes and (options[:minutes] % options[:club].unit_charging_minutes) >= options[:club].maximum_discard_minutes
-      unit_minutes * options[:club].unit_charging_minutes
-    end
-  end
-
-  def price_by_time options = {}
-    if options[:minutes] < options[:club].minimum_charging_minutes
-      0
-    else
-      hours = options[:minutes] / options[:club].unit_charging_minutes
-      hours += 1 if hours.zero?
-      hours += 1 if options[:minutes] > options[:club].unit_charging_minutes and (options[:minutes] % options[:club].unit_charging_minutes) >= options[:club].maximum_discard_minutes
-      hours * options[:price_per_hour] * (options[:club].unit_charging_minutes.to_f / 60)
-    end
-  end
-
-  def member_balance member
-    case member.card.type
-    when :by_ball then "#{member.ball_amount}粒球"
-    when :by_time then "#{member.minute_amount}分钟"
-    when :unlimited then "#{member.remaining_valid_days}天"
-    when :stored then porto_price(member.deposit)
-    end
-  end
-
   def line_item_resource line_item
     case line_item.type
     when :product then line_item.product.name
@@ -293,50 +203,14 @@ module Operation::BaseHelper
     end
   end
 
-  def member_expense_type item
-    if item.is_a? PlayingItem
-      '打球消费'
-    elsif item.is_a? ProvisionItem
-      '餐饮消费'
-    elsif item.is_a? ExtraItem
-      '其它消费'
-    end
-  end
-
-  def member_expense_item item
-    if item.is_a? PlayingItem
-      
-    elsif item.is_a? ProvisionItem
-      "#{item.provision.name} x #{item.quantity}"
-    elsif item.is_a? ExtraItem
-      "#{te_extra_item_type(item.type)}#{" - #{item.remarks}" unless item.remarks.blank?}"
-    end
-  end
-
-  def member_expense_amount expense
-    if expense.item.is_a? PlayingItem
-      if expense.item.payment_method_by_ball_member?
-        "#{expense.amount}粒球"
-      elsif expense.item.payment_method_by_time_member?
-        "#{expense.amount}分钟"
-      elsif expense.item.payment_method_stored_member?
-        porto_price(expense.amount)
-      end
-    elsif expense.item.is_a? ProvisionItem
-      porto_price(expense.amount)
-    elsif expense.item.is_a? ExtraItem
-      porto_price(expense.amount)
-    end
-  end
-
-  def transaction_record_type type
+  def te_member_transaction_type type
     case type
     when :income then '收入'
     when :expenditure then '支出'
     end
   end
 
-  def transaction_record_action action
+  def te_member_transaction_action action
     case action
     when :consumption then '消费'
     when :charge then '充值'
@@ -344,7 +218,28 @@ module Operation::BaseHelper
     end
   end
 
-  def transaction_record_content transaction_record
+  def styled_tab_state state
+    raw(case @tab.state
+    when 'finished' then '<span class="text-success">已完成</span>'
+    when 'cancelled' then '<span class="text-danger">已取消</span>'
+    when 'trashed' then '<span class="text-danger">已删除</span>'
+    end)
+  end
+
+  def member_transaction_amount member_transaction, type
+    amount = case type
+    when :before then member_transaction.send(:before_amount)
+    when :current then member_transaction.send(:amount)
+    when :after then member_transaction.send(:after_amount)
+    end
+    case member_transaction.member.card.type
+    when :by_time then porto_minute(amount)
+    when :by_ball then "#{amount.round}粒球"
+    when :stored then porto_price(amount)
+    end
+  end
+
+  def member_transaction_content member_transaction
     html = "#{transaction_record.hr_before_amount}"
     html += " <span class=\"transaction-record transaction-record-#{transaction_record.type}\">#{transaction_record.type_income? ? '+' : '-'} #{transaction_record.hr_amount}</span>"
     html += " = #{transaction_record.hr_after_amount}"

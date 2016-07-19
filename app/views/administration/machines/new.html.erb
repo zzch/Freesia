@@ -1,0 +1,41 @@
+<header class="page-header">
+  <h2>创建加球机</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "administration/commons/error_messages", target: @machine %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">加球机信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for [:admin, @machine], html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.model' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.select :model, machine_model_options, {}, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.serial_number' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.text_field :serial_number, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_amat 'machine.manufactured_at' %> <span class="required">*</span></label>
+            <div class="col-sm-6">
+              <%= f.text_field :manufactured_at, value: porto_date(Time.now), data: { 'plugin-datepicker' => true }, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', admin_machines_path, class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

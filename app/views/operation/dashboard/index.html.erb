@@ -3,6 +3,7 @@
 </header>
 <div class="row">
   <div class="col-md-12">
+    <%= porto_flash %>
     <div class="row">
       <div class="col-md-6 col-lg-3 col-xl-3">
         <section class="panel panel-featured-left panel-featured-primary">
@@ -18,8 +19,8 @@
                   <div class="summary">
                     <h4 class="title">会籍</h4>
                     <div class="info">
-                      <strong class="amount">281人</strong>
-                      <span class="text-primary">(新增 14人)</span>
+                      <strong class="amount"><%= @members_count %></strong>
+                      <span class="text-primary">(新增 <%= @recently_members_count %>)</span>
                     </div>
                   </div>
                 </div>
@@ -30,23 +31,25 @@
       </div>
       <div class="col-md-6 col-lg-3 col-xl-3">
         <section class="panel panel-featured-left panel-featured-secondary">
-          <div class="panel-body">
-            <div class="widget-summary widget-summary-sm">
-              <div class="widget-summary-col widget-summary-col-icon">
-                <div class="summary-icon bg-secondary">
-                  <i class="fa fa-jpy"></i>
+          <a href="<%= url_for(members_path) %>">
+            <div class="panel-body">
+              <div class="widget-summary widget-summary-sm">
+                <div class="widget-summary-col widget-summary-col-icon">
+                  <div class="summary-icon bg-secondary">
+                    <i class="fa fa-jpy"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="widget-summary-col">
-                <div class="summary">
-                  <h4 class="title">日收入</h4>
-                  <div class="info">
-                    <strong class="amount">14,890元</strong>
+                <div class="widget-summary-col">
+                  <div class="summary">
+                    <h4 class="title">日收入</h4>
+                    <div class="info">
+                      <strong class="amount"><%= porto_price(@daily_in_total) %></strong>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </a>
         </section>
       </div>
       <div class="col-md-6 col-lg-3 col-xl-3">
@@ -107,7 +110,7 @@
             <% if bay.occupied? %>
             <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay.tab, class: 'btn btn-danger btn-block' %></div>
             <% elsif bay.closed? %>
-            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay, class: 'btn btn-default btn-block' %></div>
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, bay, class: 'btn btn-dark btn-block' %></div>
             <% else %>
             <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 mb-xs dashboard-bay-item"><%= link_to bay.name, new_tab_path(bay_ids: bay.id), class: 'btn btn-success btn-block' %></div>
             <% end %>
@@ -118,9 +121,9 @@
         <% end %>
         <div class="row">
           <div class="col-xs-12 text-right">
-            <span class="label label-success">可用</span>
+            <span class="label label-success">空闲</span>
             <span class="label label-danger">使用中</span>
-            <span class="label label-default">已关闭</span>
+            <span class="label label-dark">已关闭</span>
           </div>
         </div>
       </div>

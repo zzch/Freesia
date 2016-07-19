@@ -40,6 +40,14 @@ class Card < ActiveRecord::Base
     end.flatten
   end
 
+  def latest_number
+    self.members.order(created_at: :desc).first.try(:number)
+  end
+
+  def as_json options = {}
+    super((options || {}).merge({ methods: %w(latest_number) }))
+end
+
   protected
     def can_be_destroy?
       raise MemberExists.new unless self.members.blank?

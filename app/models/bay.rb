@@ -4,6 +4,7 @@ class Bay < ActiveRecord::Base
   as_enum :location, [:first_floor, :second_floor, :third_floor, :green, :simulator], prefix: true, map: :string
   belongs_to :club
   belongs_to :tab
+  belongs_to :machine
   has_many :taggables, class_name: 'BayTaggable', dependent: :destroy
   has_many :tags, through: :taggables
   aasm column: 'state' do

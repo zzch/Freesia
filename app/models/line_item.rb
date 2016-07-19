@@ -11,6 +11,10 @@ class LineItem < ActiveRecord::Base
   scope :driving, -> { where("type_cd = 'driving'") }
   scope :non_driving, -> { where("type_cd <> 'driving'") }
 
+  def finished?
+    !self.ended_at.blank?
+  end
+
   def ready_to_check?
     if self.type_driving?
       !self.charge_method.blank? and !self.pay_method.blank?
@@ -56,7 +60,7 @@ class LineItem < ActiveRecord::Base
   def driving_total_amount_in_yuan
     raise InvalidLineItemType.new unless self.type_driving?
     raise InvalidPayMethod.new if !self.ready_to_check? or %w(ball_member time_member unlimited_member).include?(self.pay_method.type.to_s)
-    day = %w(6 7).include?(Time.now.day) ? 'holiday' : 'weekday'
+    day = %w(6 7).include?(Time.now.wday.to_s) ? 'holiday' : 'weekday'
     if self.pay_method.type_stored_member?
       case self.charge_method
       when :by_ball
@@ -70,14 +74,14 @@ class LineItem < ActiveRecord::Base
           bay_price
         else
           self.bay.send("#{day}_price_per_hour")
-        end.to_f / 60 * self.actual_minutes).round
+        end.to_f / 60 * self.charge_minutes).round
       end
     else
       case self.charge_method
       when :by_ball
         self.bay.send("#{day}_price_per_bucket") * self.quantity
       when :by_time
-        (self.bay.send("#{day}_price_per_hour").to_f / 60 * self.actual_minutes).round
+        (self.bay.send("#{day}_price_per_hour").to_f / 60 * self.charge_minutes).round
       end
     end
   end
@@ -120,6 +124,17 @@ class LineItem < ActiveRecord::Base
   def update_ended_at options = {}
     raise InvalidTime.new if (time = Time.now.change(hour: options[:hour], min: options[:minute], sec: 59)) < started_at
     update!(ended_at: time)
+  end
+
+  def swap_bay_with bay
+    ActiveRecord::Base.transaction do
+      bay.lock!
+      raise OccupiedBay.new unless bay.unoccupied?
+      self.bay.check_out!
+      bay.check_in!
+      bay.update!(tab: self.tab)
+      update!(bay_id: bay.id)
+    end
   end
 
   def cancel

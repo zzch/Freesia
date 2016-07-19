@@ -3,22 +3,23 @@ class OperationTransaction < ActiveRecord::Base
   belongs_to :club
   belongs_to :tab
   belongs_to :member
-  as_enum :type, [:tab, :member], prefix: true, map: :string
-  aasm column: 'state' do
-    state :available, initial: true
-    state :droped
-    event :drop do
-      transitions from: :available, to: :droped
-    end
-  end
+  as_enum :type, [:income, :refund], prefix: true, map: :string
 
   class << self
-    def create_by_tab options = {}
-      create!(options.merge(type: :tab))
+    def income options = {}
+      create!(options.merge(type: :income))
     end
 
-    def create_by_member options = {}
-      create!(options.merge(type: :member))
+    def refund options = {}
+      create!(options.merge(type: :refund))
+    end
+
+    def daily_in_total club
+      daily(club).inject(0){|result, item| item.type_income? ? result + item.amount : result - item.amount} || 0
+    end
+
+    def daily club
+      where(club_id: club.id).where('created_at >= ? AND created_at <= ?', Time.now.beginning_of_day, Time.now.end_of_day)
     end
   end
 end

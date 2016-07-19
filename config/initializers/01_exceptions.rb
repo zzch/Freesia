@@ -43,5 +43,8 @@ exceptions = %w(
   InvalidLineItemType
   NotReadyToCheck
   InsufficientBalance
+  OccupiedBay
+  RefundAmountCanNotBeGreaterThanActualPrice
+  AmountCanNotBeNegetive
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

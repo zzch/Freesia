@@ -12,7 +12,6 @@
           <div class="col-sm-9 mt-md">
             <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">收银台</h2>
             <h4 class="h4 m-none text-dark text-weight-bold">#<%= @tab.formatted_sequence %></h4>
-            <p class="mt-lg"><%= link_to '返回消费单', @tab %></p>
           </div>
           <div class="col-sm-3 mt-md mb-md">
             <div class="table-responsive">
@@ -20,7 +19,7 @@
                 <tbody>
                   <tr>
                     <td><i class="fa fa-user"></i></td>
-                    <td><%= @tab.user.name %></td>
+                    <td><%= link_to @tab.user.name, @tab.user, target: '_blank' %></td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-phone"></i></td>
@@ -73,7 +72,7 @@
       </div>
       <% end %>
       <% unless @tab.line_items.non_driving.blank? %>
-      <blockquote class="b-thick primary"><h4 class="text-dark">非打球消费</h4></blockquote>
+      <blockquote class="b-thick primary"><h4 class="text-dark">商品消费</h4></blockquote>
       <div class="table-responsive">
         <table class="table table-bordered invoice-items">
           <thead>
@@ -107,24 +106,16 @@
       <% end %>
       <div class="invoice-summary">
         <div class="row">
-          <div class="col-sm-4 col-sm-offset-8">
+          <div class="col-sm-5 col-sm-offset-7">
             <table class="table h5 text-dark">
               <tbody>
                 <tr class="b-top-none">
-                  <td colspan="2">计时卡</td>
-                  <td class="text-left">0小时</td>
+                  <td colspan="2">免付款</td>
+                  <td class="text-left"><%= porto_price(@tab.total_amount_in_non_reception) %></td>
                 </tr>
-                <tr>
-                  <td colspan="2">计球卡</td>
-                  <td class="text-left">0粒球</td>
-                </tr>
-                <tr>
-                  <td colspan="2">储值卡</td>
-                  <td class="text-left">0元</td>
-                </tr>
-                <tr>
-                  <td colspan="2">前台付</td>
-                  <td class="text-left">0元</td>
+                <tr class="h4">
+                  <td colspan="2">前台付款</td>
+                  <td class="text-left"><%= porto_price(@tab.total_amount_in_reception) %></td>
                 </tr>
               </tbody>
             </table>
@@ -137,7 +128,7 @@
       <% if @tab.ready_to_check? %>
       <%= link_to '确认', check_tab_path(@tab), method: :put, class: 'btn btn-primary' %>
       <% else %>
-      <%= link_to '确认', '#', method: :put, disabled: true, class: 'btn btn-muted' %>
+      <%= link_to '确认', 'javascript: return;', disabled: true, class: 'btn btn-primary' %>
       <% end %>
     </div>
   </div>

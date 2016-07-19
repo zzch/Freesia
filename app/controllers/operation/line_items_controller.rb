@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Operation::LineItemsController < Operation::BaseController
-  before_action :find_line_item, only: %w(update_driving_pay_method update_non_driving_pay_method async_update_quantity async_update_started_at async_update_ended_at cancel finish)
+  before_action :find_line_item, only: %w(update_driving_pay_method update_non_driving_pay_method async_update_quantity async_update_started_at async_update_ended_at cancel finish edit_bay update_bay)
   before_action :find_tab, only: %w(new_driving new_product new_course new_other create_driving create_product create_course create_other)
 
   def new_driving
@@ -106,6 +106,18 @@ class Operation::LineItemsController < Operation::BaseController
   def finish
     @line_item.finish
     redirect_to @line_item.tab, notice: '操作成功'
+  end
+
+  def edit_bay
+  end
+
+  def update_bay
+    begin
+      @line_item.swap_bay_with(@current_club.bays.find(params[:line_item][:bay_id]))
+      redirect_to @line_item.tab, notice: '操作成功'
+    rescue OccupiedBay
+      redirect_to @line_item.tab, alert: '操作失败！打位状态无效！'
+    end
   end
 
   protected

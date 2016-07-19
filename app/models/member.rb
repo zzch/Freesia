@@ -8,6 +8,7 @@ class Member < ActiveRecord::Base
   belongs_to :card
   has_many :memberships
   has_many :users, through: :memberships
+  has_many :member_transactions
   before_destroy :can_be_destroyed?
   aasm column: 'state' do
     state :available, initial: true
@@ -31,15 +32,23 @@ class Member < ActiveRecord::Base
   scope :stored_cards, -> { includes(:card).where(cards: { type_cd: :stored }) }
   scope :unexpired, -> { where('expired_at >= ?', Time.now) }
   scope :expired, -> { where('expired_at < ?', Time.now) }
-  validates :card_id, presence: true
-  validates :actual_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :actual_valid_months, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  scope :rencently, -> { where('issued_at > ?', Time.now - 7.days) }
+  validates :card_id, presence: true, on: :create
+  validates :actual_price, presence: true, numericality: { greater_than_or_equal_to: 0 }, on: :create
+  validates :actual_valid_months, presence: true, numericality: { only_integer: true, greater_than: 0 }, on: :create
   validates :number, presence: true, length: { maximum: 50 }
-  validates :issued_at, presence: true
+  validates :issued_at, presence: true, on: :create
   validates :remarks, length: { maximum: 30000 }
 
   def holder
     self.memberships.select{|membership| membership.role_holder?}.first.user
+  end
+
+  def cancel_and_refund amount
+    ActiveRecord::Base.transaction do
+      self.cancel!
+      OperationTransaction.refund(club: self.club, member: self, amount: amount)
+    end
   end
 
   class << self
@@ -80,7 +89,7 @@ class Member < ActiveRecord::Base
           issued_at: options[:attributes].issued_at,
           expired_at: issued_at + options[:attributes].actual_valid_months.to_i.months - 1.day,
           remarks: options[:attributes].remarks).tap {|member| member.memberships.create!(club: options[:club], user: options[:user], role: :holder)}.tap do |member|
-          OperationTransaction.create_by_member(club: options[:club], member: member, amount: options[:attributes].actual_price)
+          OperationTransaction.income(club: options[:club], member: member, amount: options[:attributes].actual_price)
         end
       rescue ActiveRecord::RecordNotFound
         raise InvalidCard.new

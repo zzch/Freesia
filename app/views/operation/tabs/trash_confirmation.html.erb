@@ -1,0 +1,57 @@
+<header class="page-header">
+  <h2>删除消费单</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= render "operation/commons/error_messages", target: @tab %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">消费单信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_for @tab, url: trash_tab_path(@tab), method: :put, html: { class: 'form-horizontal form-bordered' } do |f| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.sequence' %></label>
+            <div class="col-sm-6">
+              <div class="input-group">
+                <span class="input-group-addon">No.</span>
+                <%= text_field_tag nil, @tab.formatted_sequence, readonly: true, class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.user' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @tab.user.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'tab.entrance_time' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_datetime(@tab.entrance_time), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">备注</label>
+            <div class="col-sm-6">
+              <%= text_area_tag :remarks, nil, placeholder: '请填写删除的原因及理由', rows: 8, data: { 'plugin-maxlength' => true }, maxlength: '500', class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', @tab, class: 'btn btn-default' %>&nbsp;
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      $('[data-toggle="confirmation"]').confirmation();
+    });
+  </script>
+<% end %>

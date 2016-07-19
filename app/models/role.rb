@@ -2,7 +2,7 @@ class Role < ActiveRecord::Base
   PermissionMapping = {
     manage_role: { roles: [:new, :create, :edit, :update] },
     manage_operator: { operators: [:new, :create, :edit, :update] },
-    manage_bay: { bays: [:new, :create, :edit, :update, :bulk_new, :bulk_create] },
+    manage_bay: { bays: [:new, :create, :edit, :update, :bulk_new, :bulk_create, :open, :close] },
     manage_card: { cards: [:new, :create, :edit, :update], bay_prices: [:bulk_new, :bulk_create] },
     manage_salesman: { salesmen: [:new, :create, :edit, :update] },
     manage_product: { product_categories: [:new, :create, :edit, :update], products: [:new, :create, :edit, :update] },

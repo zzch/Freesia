@@ -4,22 +4,28 @@ class Tab < ActiveRecord::Base
   belongs_to :user
   has_many :line_items
   has_many :bays
+  has_many :member_transactions
   aasm column: 'state' do
     state :progressing, initial: true
     state :cancelled
     state :finished
-    state :voided
+    state :trashed
     event :finish do
       transitions from: :progressing, to: :finished
     end
-    event :trash do
+    event :trash, after: :clean_bays do
       transitions from: :progressing, to: :trashed
     end
-    event :cancel do
+    event :cancel, before: :can_be_cancel? do
       transitions from: :finished, to: :cancelled
     end
   end
   before_create :set_sequence, :set_entrance_time, :set_club_configuration
+  default_scope { includes(:line_items) }
+
+  def ready_to_cast_accounts?
+    self.line_items.type_drivings.all?(&:finished?)
+  end
 
   def ready_to_check?
     self.line_items.all?(&:ready_to_check?)
@@ -27,6 +33,14 @@ class Tab < ActiveRecord::Base
 
   def formatted_sequence
     self.sequence.to_s.rjust(8, '0')
+  end
+
+  def total_amount_in_non_reception
+    self.line_items.select{|line_item| line_item.pay_method.try(:type_non_reception?)}.map{|line_item| line_item.type_driving? ? line_item.driving_total_amount_in_yuan : line_item.total_amount}.reduce(:+) || 0
+  end
+
+  def total_amount_in_reception
+    self.line_items.select{|line_item| line_item.pay_method.try(:type_reception?)}.map{|line_item| line_item.type_driving? ? line_item.driving_total_amount_in_yuan : line_item.total_amount}.reduce(:+) || 0
   end
 
   def check
@@ -37,7 +51,6 @@ class Tab < ActiveRecord::Base
       self.departure_time = Time.now
       self.finish
       self.save!
-      self.bays.each{|bay| bay.update!(tab: nil)}
       member_expenses = Hash.new(0)
       self.line_items.each do |line_item|
         case line_item.pay_method.type
@@ -59,6 +72,17 @@ class Tab < ActiveRecord::Base
           MemberTransaction.create!(club: self.club, member: member, type: :expenditure, action: :consumption, tab: self, before_amount: member.amount, amount: amount, after_amount: member.amount - amount)
           member.update!(amount: member.amount - amount)
         end
+      end
+      OperationTransaction.income(club: self.club, tab: self, amount: self.total_amount_in_reception) if self.total_amount_in_reception > 0
+    end
+  end
+
+  def cancel_and_refund amount
+    ActiveRecord::Base.transaction do
+      self.cancel!
+      OperationTransaction.refund(club: self.club, tab: self, amount: amount)
+      self.member_transactions.each do |member_transaction|
+        MemberTransaction.create!(club: self.club, member: member_transaction.member, type: :income, action: :refund, tab: self, before_amount: member_transaction.member.amount, amount: member_transaction.amount, after_amount: member_transaction.member.amount + member_transaction.amount)
       end
     end
   end
@@ -108,5 +132,13 @@ class Tab < ActiveRecord::Base
       self.minimum_charging_minutes = self.club.minimum_charging_minutes
       self.unit_charging_minutes = self.club.unit_charging_minutes
       self.maximum_discard_minutes = self.club.maximum_discard_minutes
+    end
+
+    def clean_bays
+      self.bays.each{|bay| bay.check_out!}
+    end
+
+    def can_be_cancel?
+      raise InvalidState.new unless self.finished?
     end
 end

@@ -1,3 +1,4 @@
+Administrator.create!(account: 'wanghao', password: '123456', password_confirmation: '123456', name: '王皓', omnipotent: true)
 PayMethod.create!([
   { type: :ball_member, name: '计球卡' },
   { type: :time_member, name: '计时卡' },

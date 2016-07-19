@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   scope module: :operation do
     root 'dashboard#index'
+    get :dashboard, to: 'dashboard#index', as: :dashboard
     resources :tabs do
       resources :line_items do
         collection do
@@ -25,6 +26,10 @@ Rails.application.routes.draw do
       member do
         get :checkout
         put :check
+        get :trash_confirmation
+        put :trash
+        get :cancel_confirmation
+        put :cancel
       end
     end
     resources :line_items do
@@ -36,10 +41,13 @@ Rails.application.routes.draw do
         patch :update_non_driving_pay_method
         delete :cancel
         put :finish
+        get :edit_bay
+        patch :update_bay
       end
     end
     resources :members do
       resources :memberships
+      resources :member_transactions
       member do
         get :cancel_confirmation
         put :cancel
@@ -73,12 +81,25 @@ Rails.application.routes.draw do
         get :bulk_new
         post :bulk_create
       end
+      member do
+        put :open
+        put :close
+      end
     end
     resources :roles
     resources :operators
     resources :changelogs
     resources :error
+    get :sign_in, to: 'sessions#new', as: :sign_in
+    post :sign_in, to: 'sessions#create'
+    get :sign_out, to: 'sessions#destroy', as: :sign_out
+  end
+  scope as: :admin, module: :administration, path: :admin do
+    root 'dashboard#index'
     get :dashboard, to: 'dashboard#index', as: :dashboard
+    resources :clubs
+    resources :bays
+    resources :machines
     get :sign_in, to: 'sessions#new', as: :sign_in
     post :sign_in, to: 'sessions#create'
     get :sign_out, to: 'sessions#destroy', as: :sign_out

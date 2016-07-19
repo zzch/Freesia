@@ -81,11 +81,18 @@ class Operation::MembersController < Operation::BaseController
 
   def cancel
     begin
-      @member.cancel!
+      refund_amount = params[:refund_amount].to_f
+      raise AmountCanNotBeNegetive.new if refund_amount < 0
+      raise RefundAmountCanNotBeGreaterThanActualPrice.new if refund_amount > @member.actual_price
+      @member.cancel_and_refund(refund_amount)
       BehaviorTransaction.cancel_member(club_and_operator_and_remarks.merge(member: @member))
       redirect_to members_path, notice: '操作成功'
     rescue InvalidState
-      redirect_to @member, alert: '操作失败，无效的会籍状态'
+      redirect_to cancel_confirmation_member_path(@member), alert: '操作失败，无效的会籍状态'
+    rescue AmountCanNotBeNegetive
+      redirect_to cancel_confirmation_member_path(@member), alert: '操作失败，退款金额不能小于0'
+    rescue RefundAmountCanNotBeGreaterThanActualPrice
+      redirect_to cancel_confirmation_member_path(@member), alert: '操作失败，退款金额不能大于实际价格'
     end
   end
 

@@ -10,6 +10,7 @@ class CreateBays < ActiveRecord::Migration
       t.decimal :holiday_price_per_hour, precision: 7, scale: 2
       t.decimal :weekday_price_per_bucket, precision: 7, scale: 2
       t.decimal :holiday_price_per_bucket, precision: 7, scale: 2
+      t.references :machine
       t.string :state, limit: 20, null: false
       t.timestamps null: false
     end
