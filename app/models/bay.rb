@@ -50,6 +50,19 @@ class Bay < ActiveRecord::Base
         end
       end
     end
+
+    def bulk_create_pairing options = {}
+      ActiveRecord::Base.transaction do
+        options[:bay_ids].each do |bay_id, machine_id|
+          bay = options[:club].bays.find(bay_id)
+          if machine_id.blank?
+            Machine.where(club_id: options[:club].id, bay_id: bay.id)
+          else
+            machine = Machine.find(machine_id)
+          end
+        end
+      end
+    end
   end
 
   protected

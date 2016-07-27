@@ -23,4 +23,8 @@ class Machine < ActiveRecord::Base
   validates :model, presence: true
   validates :serial_number, presence: true, length: { maximum: 10 }, uniqueness: true
   validates :manufactured_at, presence: true
+
+  def retire
+
+  end
 end
