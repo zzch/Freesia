@@ -4,8 +4,7 @@ module V1
     resource :machines do
       desc '加球机心跳请求'
       post :pulse do
-        present request.body.read
-        #present MachinePulse.response(Hash[request.body.string.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
+        present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
       end
 
       desc '加球机出球确认'
