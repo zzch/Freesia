@@ -14,7 +14,7 @@
           <div class="form-group">
             <label class="col-sm-3 control-label"><%= bay.name %></label>
             <div class="col-sm-6">
-              <%= collection_select :machine_id, :id, Machine.stocked, :id, :serial_number, { include_blank: '不使用' }, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+              <%= collection_select :bay_ids, bay.id, Machine.stocked, :id, :serial_number, { include_blank: '不使用' }, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
             </div>
           </div>
           <% end %>

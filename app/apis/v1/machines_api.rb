@@ -4,7 +4,9 @@ module V1
     resource :machines do
       desc '加球机心跳请求'
       post :pulse do
-        present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
+        result = MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
+        Rails.logger.info result
+        present result
       end
 
       desc '加球机出球确认'
