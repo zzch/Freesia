@@ -4,10 +4,9 @@ module V1
     resource :machines do
       desc '加球机心跳请求'
       post :pulse do
-        result = MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
-        Rails.logger.info result
         header('Content-Type', 'text/html; charset=GBK')
-        present result
+        env['api.format'] = :txt
+        present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
       end
 
       desc '加球机出球确认'
