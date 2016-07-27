@@ -6,6 +6,7 @@ module V1
       post :pulse do
         result = MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
         Rails.logger.info result
+        header('Content-Type', 'text/html; charset=GBK')
         present result
       end
 
