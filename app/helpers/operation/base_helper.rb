@@ -107,10 +107,6 @@ module Operation::BaseHelper
     @current_club.salesmen.map{|salesman| ["#{PinYin.abbr(salesman.name).upcase} | #{salesman.name}", salesman.id]}
   end
 
-  def machine_model_options
-    [['16年7月', :v1]]
-  end
-
   def card_type_options
     Card.types.keys.map do |type|
       [(case type
@@ -244,6 +240,16 @@ module Operation::BaseHelper
     html += " <span class=\"transaction-record transaction-record-#{transaction_record.type}\">#{transaction_record.type_income? ? '+' : '-'} #{transaction_record.hr_amount}</span>"
     html += " = #{transaction_record.hr_after_amount}"
     raw(html)
+  end
+
+  def machine_model_options
+    [['16年7月', :v1]]
+  end
+
+  def te_machine_model model
+    case model
+    when :v1 then '16年7月'
+    end
   end
 
   def styled_role_permission permission, name

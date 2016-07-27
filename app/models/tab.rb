@@ -22,6 +22,7 @@ class Tab < ActiveRecord::Base
   end
   before_create :set_sequence, :set_entrance_time, :set_club_configuration
   default_scope { includes(:line_items) }
+  scope :daily, -> { where('departure_time >= ? AND departure_time <= ?', Time.now.beginning_of_day, Time.now.end_of_day) }
 
   def ready_to_cast_accounts?
     self.line_items.type_drivings.all?(&:finished?)

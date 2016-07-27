@@ -14,7 +14,7 @@ class OperationTransaction < ActiveRecord::Base
       create!(options.merge(type: :refund))
     end
 
-    def daily_in_total club
+    def daily_profit_in_total club
       daily(club).inject(0){|result, item| item.type_income? ? result + item.amount : result - item.amount} || 0
     end
 

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount API => '/'
   scope module: :operation do
     root 'dashboard#index'
     get :dashboard, to: 'dashboard#index', as: :dashboard
@@ -97,7 +98,14 @@ Rails.application.routes.draw do
   scope as: :admin, module: :administration, path: :admin do
     root 'dashboard#index'
     get :dashboard, to: 'dashboard#index', as: :dashboard
-    resources :clubs
+    resources :clubs do
+      resources :bays do
+        collection do
+          get :bulk_new_pairing
+          post :bulk_create_pairing
+        end
+      end
+    end
     resources :bays
     resources :machines
     get :sign_in, to: 'sessions#new', as: :sign_in

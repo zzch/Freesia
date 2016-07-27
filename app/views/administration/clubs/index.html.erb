@@ -1,0 +1,43 @@
+<header class="page-header">
+  <h2>球场列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">球场列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'club.name' %></th>
+                <th><%= porto_arat 'club.code' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="table-paginate"><%= porto_paginate @clubs %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @clubs.each do |club| %>
+              <tr>
+                <td><%= club.name %></td>
+                <td><%= club.code %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), [:admin, club] %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_admin_club_path(club) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

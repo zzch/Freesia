@@ -19,7 +19,7 @@ class Administration::MachinesController < Administration::BaseController
   def create
     @machine = Machine.new(machine_params)
     if @machine.save
-      redirect_to @machine, notice: '操作成功'
+      redirect_to [:admin, @machine], notice: '操作成功'
     else
       render action: 'new'
     end
@@ -27,7 +27,7 @@ class Administration::MachinesController < Administration::BaseController
   
   def update
     if @machine.update(machine_params)
-      redirect_to @machine, notice: '操作成功'
+      redirect_to [:admin, @machine], notice: '操作成功'
     else
       render action: 'edit'
     end

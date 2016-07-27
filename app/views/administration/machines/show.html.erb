@@ -1,0 +1,81 @@
+<header class="page-header">
+  <h2>查看加球机</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">加球机信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.model' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, te_machine_model(@machine.model), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.serial_number' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @machine.serial_number, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.manufactured_at' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_date(@machine.manufactured_at), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.remarks' %></label>
+            <div class="col-sm-6">
+              <%= text_area_tag nil, @machine.remarks, rows: 6, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <% unless @machine.stocked? %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.club' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @machine.club.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.bay' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @machine.bay.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <% end %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.out_of_stock' %></label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, porto_boolean(@machine.out_of_stock), readonly: true, class: 'form-control' %>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'machine.battery' %></label>
+            <div class="col-sm-2">
+              <%= text_field_tag nil, @machine.battery, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.last_pulsed_at' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, porto_date(@machine.last_pulsed_at), readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'machine.state' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @machine.aasm.human_state, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', admin_machines_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_admin_machine_path(@machine), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+</div>

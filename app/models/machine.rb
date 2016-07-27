@@ -20,4 +20,7 @@ class Machine < ActiveRecord::Base
       transitions from: :online, to: :offline
     end
   end
+  validates :model, presence: true
+  validates :serial_number, presence: true, length: { maximum: 10 }, uniqueness: true
+  validates :manufactured_at, presence: true
 end

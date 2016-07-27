@@ -28,7 +28,7 @@ module PortoHelper
   end
 
   def porto_boolean boolean
-    boolean ? '是' : '否'
+    boolean ? '是' : '否' unless boolean.nil?
   end
 
   def porto_blank value, prompt = '无'

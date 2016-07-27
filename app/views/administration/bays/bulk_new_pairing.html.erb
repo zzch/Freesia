@@ -1,0 +1,31 @@
+<header class="page-header">
+  <h2>批量设置加球机</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">打位信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag bulk_create_pairing_admin_club_bays_path(@club), class: 'form-horizontal form-bordered' do %>
+          <% @club.bays.each do |bay| %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= bay.name %></label>
+            <div class="col-sm-6">
+              <%= collection_select :machine_id, :id, Machine.stocked, :id, :serial_number, { include_blank: '不使用' }, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <% end %>
+          <div class="form-group">
+            <div class="col-sm-12 text-center">
+              <%= submit_tag '提交', class: 'btn btn-primary' %>&nbsp;
+              <%= link_to '返回', [:admin, @club], class: 'btn btn-default' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

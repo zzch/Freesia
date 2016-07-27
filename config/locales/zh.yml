@@ -451,6 +451,20 @@ zh:
         name: 姓名
         phone: 手机号码
         receive_sms: 是否接收短信
+      machine:
+        model: 型号
+        serial_number: 序列号
+        manufactured_at: 出厂日期
+        remarks: 备注
+        club: 所在球场
+        bay: 所在打位
+        out_of_stock: 缺球
+        battery: 电量
+        last_pulsed_at: 最后心跳时间
+        state: 状态
+        state/stocked: 未使用
+        state/online: 在线
+        state/offline: 离线
       member_transaction:
         type: 类型
         action: 子类型

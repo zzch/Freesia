@@ -1,5 +1,5 @@
 <header class="page-header">
-  <h2>创建加球机</h2>
+  <h2>编辑加球机</h2>
 </header>
 <div class="row">
   <div class="col-md-12">
@@ -37,7 +37,7 @@
           <div class="form-group">
             <div class="col-sm-12 text-center">
               <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
-              <%= link_to '返回', admin_machines_path, class: 'btn btn-default' %>
+              <%= link_to '返回', [:admin, @machine], class: 'btn btn-default' %>
             </div>
           </div>
         <% end %>

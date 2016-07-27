@@ -1,0 +1,45 @@
+<header class="page-header">
+  <h2>加球机列表</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">加球机列表</h2>
+      </header>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-none">
+            <thead>
+              <tr>
+                <th><%= porto_arat 'machine.model' %></th>
+                <th><%= porto_arat 'machine.serial_number' %></th>
+                <th><%= porto_arat 'machine.manufactured_at' %></th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="table-paginate"><%= porto_paginate @machines %></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @machines.each do |machine| %>
+              <tr>
+                <td><%= machine.model %></td>
+                <td><%= machine.serial_number %></td>
+                <td><%= porto_date(machine.manufactured_at) %></td>
+                <td class="actions">
+                  <%= link_to raw('<i class="fa fa-file-text-o"></i>'), [:admin, machine] %>
+                  <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_admin_machine_path(machine) %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

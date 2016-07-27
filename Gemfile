@@ -21,6 +21,9 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'ckeditor'
 gem 'geocoder'
+gem 'grape'
+gem 'grape-entity'
+gem 'grape-swagger'
 gem 'faker'
 
 group :development do

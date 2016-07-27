@@ -1,0 +1,93 @@
+<header class="page-header">
+  <h2>查看球场</h2>
+</header>
+<div class="row">
+  <div class="col-md-12">
+    <%= porto_flash %>
+    <section class="panel">
+      <header class="panel-heading">
+        <h2 class="panel-title">球场信息</h2>
+      </header>
+      <div class="panel-body">
+        <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @club.name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.short_name' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @club.short_name, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.position' %></label>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'club.longitude' %></span>
+                <%= text_field_tag nil, @club.longitude, readonly: true, class: 'form-control' %>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group">
+                <span class="input-group-addon"><%= porto_arat 'club.latitude' %></span>
+                <%= text_field_tag nil, @club.latitude, readonly: true, class: 'form-control' %>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.address' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @club.address, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.phone_number' %></label>
+            <div class="col-sm-6">
+              <%= text_field_tag nil, @club.phone_number, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.balls_per_bucket' %></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= text_field_tag nil, @club.balls_per_bucket, readonly: true, class: 'form-control' %>
+                <span class="input-group-addon">粒</span>
+              </div>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'club.minimum_charging_minutes' %></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= text_field_tag nil, @club.minimum_charging_minutes, readonly: true, class: 'form-control' %>
+                <span class="input-group-addon">分钟</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= porto_arat 'club.unit_charging_minutes' %></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= text_field_tag nil, @club.unit_charging_minutes, readonly: true, class: 'form-control' %>
+                <span class="input-group-addon">分钟</span>
+              </div>
+            </div>
+            <label class="col-sm-2 control-label"><%= porto_arat 'club.maximum_discard_minutes' %></label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <%= text_field_tag nil, @club.maximum_discard_minutes, readonly: true, class: 'form-control' %>
+                <span class="input-group-addon">分钟</span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <%= link_to '返回', admin_clubs_path, class: 'btn btn-default' %>&nbsp;
+        <%= link_to '编辑', edit_admin_club_path(@club), class: 'btn btn-primary' %>&nbsp;
+        <%= link_to '批量设置加球机', bulk_new_pairing_admin_club_bays_path(@club), class: 'btn btn-primary' %>&nbsp;
+      </div>
+    </section>
+  </div>
+</div>
