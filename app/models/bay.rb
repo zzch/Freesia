@@ -56,7 +56,7 @@ class Bay < ActiveRecord::Base
         options[:bay_ids].each do |bay_id, machine_id|
           bay = options[:club].bays.find(bay_id)
           if machine_id.blank?
-            Machine.where(club_id: options[:club].id, bay_id: bay.id)
+            Machine.where(club_id: options[:club].id, bay_id: bay.id).first.try(:out_of_service)
           else
             machine = Machine.find(machine_id)
           end

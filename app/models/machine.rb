@@ -24,7 +24,13 @@ class Machine < ActiveRecord::Base
   validates :serial_number, presence: true, length: { maximum: 10 }, uniqueness: true
   validates :manufactured_at, presence: true
 
-  def retire
+  def into_service bay
+    out_stock!
+    update!(club_id: bay.club.id, bay_id: bay.id)
+  end
 
+  def out_of_service
+    in_stock!
+    update!(club_id: nil, bay_id: nil)
   end
 end
