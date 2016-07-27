@@ -2,7 +2,7 @@ class MachinePulse < ActiveRecord::Base
   belongs_to :machine
 
   def self.response params = []
-    puts "********** #{params}"
+    Rails.logger.info "********** #{params}"
     if !params[:f].blank? and !params[:t].blank? and !params[:m].blank? and !params[:g].blank? and !params[:p].blank?
       inner_params = Hash[Base64.decode64(params[:p]).gsub(/[{}"]/, '').split(',').map{|param_pair| param_pair.split(':')}].symbolize_keys
       out_of_stock = inner_params[:OOS] == 'Y' ? true : false
