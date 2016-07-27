@@ -4,8 +4,9 @@ module V1
     resource :machines do
       desc '加球机心跳请求'
       post :pulse do
-        header('Content-Type', 'text/html; charset=GBK')
+        header('Content-Type', 'text/html;charset=GBK')
         env['api.format'] = :txt
+        status 200
         present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
       end
 

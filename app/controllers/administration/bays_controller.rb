@@ -6,10 +6,15 @@ class Administration::BaysController < Administration::BaseController
   end
   
   def bulk_create_pairing
-    params[:bay_ids].each do |bay_id, machine_id|
-      @club.bays.find(bay_id)
-      puts "**** bay: #{bay_id}, machine: #{machine_id}"
+    begin
+      params[:bay_ids].each do |bay_id, machine_id|
+        @club.bays.find(bay_id)
+        Machine.find(machine_id)
+      end
+    rescue ActiveRecord::RecordNotFound
+      
     end
+    
   end
 
   protected
