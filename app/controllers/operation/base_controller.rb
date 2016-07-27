@@ -17,7 +17,7 @@ class Operation::BaseController < ApplicationController
     end
 
     def find_club
-      redirect_to public_welcome_path unless @current_club = Club.where(code: request.subdomain.gsub(/\.staging\Z/, '')).first
+      redirect_to public_welcome_path unless @current_club = Club.where(code: request.subdomain.gsub(/\.development\Z/, '')).first
     end
     
     def authenticate
