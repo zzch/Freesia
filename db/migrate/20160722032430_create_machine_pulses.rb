@@ -7,6 +7,7 @@ class CreateMachinePulses < ActiveRecord::Migration
       t.integer :gprs_intensity, limit: 1, null: false
       t.boolean :out_of_stock, null: false
       t.integer :battery, limit: 1, null: false
+      t.string :response_data, limit: 100
       t.timestamps null: false
     end
   end

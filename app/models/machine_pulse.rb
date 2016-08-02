@@ -8,7 +8,6 @@ class MachinePulse < ActiveRecord::Base
         out_of_stock = inner_params[:OOS] == 'Y' ? true : false
         battery = inner_params[:BTY].to_i
         if machine = Machine.where(serial_number: params[:m]).first and machine.pulses.where(frame_number: params[:f]).blank?
-          create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], out_of_stock: out_of_stock, battery: battery)
           machine.active(out_of_stock: out_of_stock, battery: battery)
           machine_dispensation = machine.dispensations.requested.order(:requested_at).first
           content = Base64.encode64(if machine_dispensation.blank?
@@ -17,7 +16,9 @@ class MachinePulse < ActiveRecord::Base
             machine_dispensation.response!
             "#{machine_dispensation.id},#{machine_dispensation.amount}"
           end).strip
-          "#{params[:f]},#{content.length},#{content}"
+          "#{params[:f]},#{content.length},#{content}".tap do |response_data|
+            create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], out_of_stock: out_of_stock, battery: battery, response_data: response_data)
+          end
         end
       end
     end

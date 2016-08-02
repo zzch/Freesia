@@ -6,6 +6,7 @@
       <th><span class="text-weight-normal text-sm">信号强度</span></th>
       <th><span class="text-weight-normal text-sm">缺球标识</span></th>
       <th><span class="text-weight-normal text-sm">电量标识</span></th>
+      <th><span class="text-weight-normal text-sm">响应数据</span></th>
     </tr>
   </thead>
   <tbody class="log-viewer">
@@ -16,6 +17,7 @@
       <td data-title="信号强度" class="pt-md pb-md"><%= machine_pulse.gprs_intensity %></td>
       <td data-title="缺球标识" class="pt-md pb-md"><%= machine_pulse.out_of_stock %></td>
       <td data-title="电量标识" class="pt-md pb-md"><%= machine_pulse.battery %></td>
+      <td data-title="响应数据" class="pt-md pb-md"><%= machine_pulse.response_data %></td>
     </tr>
     <% end %>
   </tbody>

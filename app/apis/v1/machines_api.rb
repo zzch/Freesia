@@ -16,7 +16,13 @@ module V1
         env['api.format'] = :txt
         status 200
         present MachineReport.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
-        present 'test'
+      end
+
+      params do
+        requires :amount, type: Integer
+      end
+      get :simulate do
+        present "交易ID：#{MachineDispensation.create!(machine_id: 1, club_id: 1, bay_id: 1, amount: params[:amount], requested_at: Time.now).id}"
       end
     end
   end
