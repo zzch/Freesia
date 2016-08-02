@@ -1,0 +1,33 @@
+<% content_for(:main_section){'has-toolbar'} %>
+<header class="page-header">
+  <h2>心跳日志</h2>
+</header>
+<div class="inner-toolbar clearfix">
+  <ul>
+    <li>
+      <button type="button" class="btn btn-primary"><i class="fa fa-pause m-none"></i> 暂停</button>
+    </li>
+  </ul>
+</div>
+<section class="panel">
+  <div class="panel-body">
+    <%= render 'pulse_log_table' %>
+  </div>
+</section>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      (function worker() {
+        $.ajax({
+          url: '/admin/machines/<%= @machine.id %>/async_pulse_log', 
+          success: function(data) {
+            $('.panel-body').html(data);
+          },
+          complete: function() {
+            setTimeout(worker, 5000);
+          }
+        });
+      })();
+    });
+  </script>
+<% end %>

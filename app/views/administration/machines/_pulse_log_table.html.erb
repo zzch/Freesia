@@ -1,0 +1,22 @@
+<table class="table table-striped table-no-more table-bordered mb-none">
+  <thead>
+    <tr>
+      <th><span class="text-weight-normal text-sm">时间</span></th>
+      <th><span class="text-weight-normal text-sm">帧ID</span></th>
+      <th><span class="text-weight-normal text-sm">信号强度</span></th>
+      <th><span class="text-weight-normal text-sm">缺球标识</span></th>
+      <th><span class="text-weight-normal text-sm">电量标识</span></th>
+    </tr>
+  </thead>
+  <tbody class="log-viewer">
+    <% @machine_pulses.each do |machine_pulse| %>
+    <tr>
+      <td data-title="时间" class="pt-md pb-md"><%= machine_pulse.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
+      <td data-title="帧ID" class="pt-md pb-md"><%= machine_pulse.frame_number %></td>
+      <td data-title="信号强度" class="pt-md pb-md"><%= machine_pulse.gprs_intensity %></td>
+      <td data-title="缺球标识" class="pt-md pb-md"><%= machine_pulse.out_of_stock %></td>
+      <td data-title="电量标识" class="pt-md pb-md"><%= machine_pulse.battery %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

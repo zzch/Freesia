@@ -11,12 +11,21 @@
       <div class="panel-body">
         <%= form_tag bulk_create_pairing_admin_club_bays_path(@club), class: 'form-horizontal form-bordered' do %>
           <% @club.bays.each do |bay| %>
+          <% if bay.machine.blank? %>
           <div class="form-group">
             <label class="col-sm-3 control-label"><%= bay.name %></label>
             <div class="col-sm-6">
               <%= collection_select :bay_ids, bay.id, Machine.stocked, :id, :serial_number, { include_blank: '不使用' }, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
             </div>
           </div>
+          <% else %>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%= bay.name %></label>
+            <div class="col-sm-6">
+              <%= select :bay_ids, bay.id, [[bay.machine.serial_number, bay.machine.id]], { selected: bay.machine.id, include_blank: '不使用' }, data: { 'plugin-selectTwo' => 'true', 'plugin-options' => '{ "minimumResultsForSearch": "Infinity" }' }, class: 'form-control' %>
+            </div>
+          </div>
+          <% end %>
           <% end %>
           <div class="form-group">
             <div class="col-sm-12 text-center">

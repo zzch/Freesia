@@ -246,7 +246,7 @@ a:active {
 @media only screen and (min-width: 1200px) {
   /* Layout Boxed - Body Tag */
   html.boxed body {
-    background: asset-url("porto/patterns/gray_jean.png") repeat;
+    background: url(../images/patterns/gray_jean.png) repeat;
     padding-bottom: 5px;
   }
 
@@ -2949,7 +2949,7 @@ blockquote.dark {
 
 /* Arrows */
 .arrow {
-  background: transparent asset-url("porto/arrows.png") no-repeat 0 0;
+  background: transparent url(../images/arrows.png) no-repeat 0 0;
   width: 47px;
   height: 120px;
   display: inline-block;
@@ -9029,7 +9029,7 @@ html.dark .chart-data-selector h2 .multiselect {
 }
 
 .jstree-default .jstree-checkbox {
-  background-image: asset-url("porto/jstree.png");
+  background-image: url(../images/jstree.png);
 }
 
 .jstree-default .jstree-icon {
@@ -9067,7 +9067,7 @@ html.dark .chart-data-selector h2 .multiselect {
 
 /* dark */
 html.dark body .jstree-default .jstree-checkbox {
-  background-image: asset-url("porto/jstree-dark.png");
+  background-image: url(../images/jstree-dark.png);
 }
 
 html.dark body .jstree-default .jstree-hovered {
@@ -15854,7 +15854,7 @@ html.dark .invoice table.table > tbody tr > td {
 
 /* Lock Screen */
 .body-locked {
-  background: asset-url("porto/patterns/noisy_net.png") repeat;
+  background: url(../images/patterns/noisy_net.png) repeat;
   max-width: none;
   min-height: 400px;
 }
@@ -15925,7 +15925,7 @@ html.dark .invoice table.table > tbody tr > td {
 }
 /* Lock Screen - Modal */
 .mfp-lock-screen.mfp-bg {
-  background: #000 asset-url("porto/patterns/noisy_net.png") repeat;
+  background: #000 url(../images/patterns/noisy_net.png) repeat;
   opacity: 0.99;
   z-index: 9998;
 }

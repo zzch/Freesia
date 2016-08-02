@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :line_items do
       member do
         patch :async_update_quantity
+        patch :async_increase_quantity_with_machine
         patch :async_update_started_at
         patch :async_update_ended_at
         patch :update_driving_pay_method
@@ -107,7 +108,14 @@ Rails.application.routes.draw do
       end
     end
     resources :bays
-    resources :machines
+    resources :machines do
+      member do
+        get :pulse_log
+        get :async_pulse_log
+        get :report_log
+        get :async_report_log
+      end
+    end
     get :sign_in, to: 'sessions#new', as: :sign_in
     post :sign_in, to: 'sessions#create'
     get :sign_out, to: 'sessions#destroy', as: :sign_out

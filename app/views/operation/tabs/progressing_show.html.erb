@@ -44,7 +44,7 @@
         <% if @tab.ready_to_cast_accounts? %>
         <%= link_to '结账', checkout_tab_path(@tab), class: 'btn btn-primary' %>&nbsp;
         <% else %>
-        <%= link_to '结账', 'javascript:return false;', disabled: true, class: 'btn btn-primary' %>&nbsp;
+        <%= link_to '结账', 'javascript:void(0)', disabled: true, class: 'btn btn-primary' %>&nbsp;
         <% end %>
         <%= link_to '删除', trash_confirmation_tab_path(@tab), class: 'btn btn-danger' %>&nbsp;
       </div>
@@ -71,6 +71,7 @@
             </div>
           </div>
           <div class="form-group">
+            <% if line_item.bay.machine.blank? %>
             <label class="col-sm-3 control-label">用球</label>
             <div class="col-sm-2">
               <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 99 }'>
@@ -80,7 +81,7 @@
                       <i class="fa fa-plus"></i>
                     </button>
                   </div>
-                  <%= text_field_tag :quantity, line_item.quantity, readonly: true, class: "spinner-input form-control line-item-id-#{line_item.id}-quantity" %>
+                  <%= text_field_tag :quantity, line_item.quantity, readonly: true, data: { 'line-item-id' => line_item.id }, class: "spinner-input form-control line-item-quantity" %>
                   <div class="spinner-buttons input-group-btn">
                     <button type="button" data-line-item-id="<%= line_item.id %>" class="btn btn-default spinner-down change-quantity">
                       <i class="fa fa-minus"></i>
@@ -89,6 +90,31 @@
                 </div>
               </div>
             </div>
+            <% else %>
+            <label class="col-sm-3 control-label">用球</label>
+            <div class="col-sm-2">
+              <div class="input-group line-item-quantity-state-normal" data-line-item-id="<%= line_item.id %>">
+                <%= text_field_tag :quantity, line_item.quantity, readonly: true, data: { 'line-item-id' => line_item.id }, class: "form-control line-item-quantity" %>
+                <div class="input-group-btn">
+                  <button tabindex="-1" data-toggle="dropdown" class="btn btn-info dropdown-toggle" type="button">
+                    <span class="caret"></span>
+                  </button>
+                  <ul role="menu" class="dropdown-menu pull-right">
+                    <li><%= link_to '设备加球', 'javascript:void(0)', data: { 'line-item-id' => line_item.id }, class: 'increase-quantity-with-machine' %></li>
+                    <li class="divider"></li>
+                    <li><%= link_to '修改数量', 'javascript:void(0)', data: { 'line-item-id' => line_item.id }, class: 'change-quantity-with-machine' %></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="input-group line-item-quantity-state-editable" data-line-item-id="<%= line_item.id %>">
+                <%= text_field_tag :quantity, line_item.quantity, data: { 'line-item-id' => line_item.id }, class: "form-control line-item-editable-quantity" %>
+                <span class="input-group-btn">
+                  <button class="btn btn-danger update-line-item-quantity-with-machine-discard" type="button" data-line-item-id="<%= line_item.id %>"><i class="fa fa-times"></i> </button>
+                  <button class="btn btn-success update-line-item-quantity-with-machine-submit" type="button" data-line-item-id="<%= line_item.id %>"><i class="fa fa-check"></i> </button>
+                </span>
+              </div>
+            </div>
+            <% end %>
             <label class="col-sm-2 control-label">用时</label>
             <div class="col-sm-2">
               <%= text_field_tag nil, porto_minute(line_item.actual_minutes), data: { 'line-item-id' => line_item.id }, readonly: true, class: 'form-control line-item-actual-minutes' %>
@@ -160,8 +186,48 @@
         $.ajax({
           type: 'patch',
           dataType: 'json',
-          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_quantity?quantity=' + $('.line-item-id-' + $(this).data('line-item-id') + '-quantity').val(),
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_quantity?quantity=' + $('.line-item-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(),
           success: function(data) {
+            if (data.result == 'failure') {
+              new PNotify({ type: 'error', title: '出错了', text: '加球数量不能小于0或者大于99' });
+            }
+          }
+        });
+      });
+      $('.increase-quantity-with-machine').on('click', function() {
+        $.ajax({
+          context: this,
+          type: 'patch',
+          dataType: 'json',
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_increase_quantity_with_machine',
+          success: function(data) {
+            if (data.result == 'success') {
+              $('.line-item-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(data.message.quantity);
+              $('.line-item-editable-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(data.message.quantity);
+            } else {
+              new PNotify({ type: 'error', title: '出错了', text: data.message });
+            }
+          }
+        });
+      });
+      $('.change-quantity-with-machine').on('click', function() {
+        $('.line-item-quantity-state-normal[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'none');
+        $('.line-item-quantity-state-editable[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'table');
+      });
+      $('.update-line-item-quantity-with-machine-discard').on('click', function() {
+        $('.line-item-quantity-state-normal[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'table');
+        $('.line-item-quantity-state-editable[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'none');
+      });
+      $('.update-line-item-quantity-with-machine-submit').on('click', function() {
+        $.ajax({
+          context: this,
+          type: 'patch',
+          dataType: 'json',
+          url: '/line_items/' + $(this).data('line-item-id') + '/async_update_quantity?quantity=' + $('.line-item-editable-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val(),
+          success: function(data) {
+            $('.line-item-quantity-state-normal[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'table');
+            $('.line-item-quantity-state-editable[data-line-item-id="' + $(this).data('line-item-id') + '"]').css('display', 'none');
+            $('.line-item-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val($('.line-item-editable-quantity[data-line-item-id="' + $(this).data('line-item-id') + '"]').val());
             if (data.result == 'failure') {
               new PNotify({ type: 'error', title: '出错了', text: '加球数量不能小于0或者大于99' });
             }

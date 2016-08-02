@@ -12,7 +12,10 @@ module V1
 
       desc '加球机出球确认'
       post :confirm do
-        
+        header('Content-Type', 'text/html;charset=GBK')
+        env['api.format'] = :txt
+        status 200
+        present MachineReport.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
         present 'test'
       end
     end

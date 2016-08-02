@@ -1158,6 +1158,9 @@ table.table-checkout-user {
     width: 80%;
   }
 }
+.line-item-quantity-state-editable {
+  display: none;
+}
 @media (min-width: 1200px) {   
   .dashboard-bay-item {
     padding-left:10px;

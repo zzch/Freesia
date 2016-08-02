@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Operation::LineItemsController < Operation::BaseController
-  before_action :find_line_item, only: %w(update_driving_pay_method update_non_driving_pay_method async_update_quantity async_update_started_at async_update_ended_at cancel finish edit_bay update_bay)
+  before_action :find_line_item, only: %w(update_driving_pay_method update_non_driving_pay_method async_update_quantity async_increase_quantity_with_machine async_update_started_at async_update_ended_at cancel finish edit_bay update_bay)
   before_action :find_tab, only: %w(new_driving new_product new_course new_other create_driving create_product create_course create_other)
 
   def new_driving
@@ -77,6 +77,16 @@ class Operation::LineItemsController < Operation::BaseController
       render json: JsonMessenger.new
     else
       render json: JsonMessenger.new('', false)
+    end
+  end
+
+  def async_increase_quantity_with_machine
+    begin
+      render json: JsonMessenger.new(quantity: @line_item.increase_quantity_with_machine)
+    rescue MachineNotFound
+      render json: JsonMessenger.new('设备不存在', false)
+    rescue MachineOffline
+      render json: JsonMessenger.new('设备处于离线状态', false)
     end
   end
 

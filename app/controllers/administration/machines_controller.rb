@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Administration::MachinesController < Administration::BaseController
-  before_action :find_machine, only: %w(show edit update destroy)
+  before_action :find_machine, only: %w(show edit update destroy pulse_log async_pulse_log report_log async_report_log)
   
   def index
     @machines = Machine.page(params[:page])
@@ -31,6 +31,15 @@ class Administration::MachinesController < Administration::BaseController
     else
       render action: 'edit'
     end
+  end
+
+  def pulse_log
+    @machine_pulses = @machine.pulses.order(created_at: :desc).limit(30)
+  end
+
+  def async_pulse_log
+    @machine_pulses = @machine.pulses.order(created_at: :desc).limit(30)
+    render '_pulse_log_table', layout: false
   end
 
   protected

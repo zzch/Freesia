@@ -115,6 +115,17 @@ class LineItem < ActiveRecord::Base
     update!(quantity: quantity)
   end
 
+  def increase_quantity_with_machine
+    ActiveRecord::Base.transaction do
+      raise MachineNotFound.new if self.bay.machine.blank?
+      raise MachineOffline.new if self.bay.machine.offline?
+      (self.quantity + 1).tap do |increased_quantity|
+        update!(quantity: increased_quantity)
+        Dispensation.create!(machine: self.bay.machine, club: self.club, bay: self.bay, amount: self.club.balls_per_bucket, requested_at: Time.now)
+      end
+    end
+  end
+
   def update_started_at options = {}
     time = Time.now.change(hour: options[:hour], min: options[:minute], sec: 0)
     raise InvalidTime.new if !ended_at.blank? and time > ended_at
