@@ -7,7 +7,7 @@ class MachineDispensation < ActiveRecord::Base
     state :requested, initial: true
     state :responsed
     state :confirmed
-    event :response do
+    event :response, after: :set_responsed_at do
       transitions from: :requested, to: :responsed
     end
     event :confirm, after: :set_confirmed_at do
@@ -16,6 +16,10 @@ class MachineDispensation < ActiveRecord::Base
   end
 
   protected
+    def set_responsed_at
+      update!(responsed_at: Time.now)
+    end
+
     def set_confirmed_at
       update!(confirmed_at: Time.now)
     end
