@@ -121,7 +121,7 @@ class LineItem < ActiveRecord::Base
       raise MachineOffline.new if self.bay.machine.offline?
       (self.quantity + 1).tap do |increased_quantity|
         update!(quantity: increased_quantity)
-        Dispensation.create!(machine: self.bay.machine, club: self.club, bay: self.bay, amount: self.club.balls_per_bucket, requested_at: Time.now)
+        MachineDispensation.create!(machine: self.bay.machine, club: self.club, bay: self.bay, amount: self.club.balls_per_bucket, requested_at: Time.now)
       end
     end
   end
