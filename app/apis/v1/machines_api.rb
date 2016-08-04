@@ -7,7 +7,9 @@ module V1
         header('Content-Type', 'text/html;charset=GBK')
         env['api.format'] = :txt
         status 200
-        present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
+        hash = Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys
+        Rails.logger.info "****** #{hash}"
+        present MachinePulse.response(hash)
       end
 
       desc '加球机出球确认'
