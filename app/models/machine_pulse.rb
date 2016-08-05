@@ -9,7 +9,7 @@ class MachinePulse < ActiveRecord::Base
         battery = inner_params[:BTY].to_i
         if machine = Machine.where(serial_number: params[:m]).first
           existed_pulse = machine.pulses.where(frame_number: params[:f]).first
-          existed_pulse.destroy if where('created_at > ?', existed_pulse.created_at).count > 5
+          existed_pulse.destroy if !existed_pulse.blank? and where('created_at > ?', existed_pulse.created_at).count > 5
           if existed_pulse.blank? or existed_pulse.destroyed?
             machine.active(out_of_stock: out_of_stock, battery: battery)
             machine_dispensation = machine.dispensations.requested.order(:requested_at).first
