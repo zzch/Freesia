@@ -7,17 +7,21 @@ class MachinePulse < ActiveRecord::Base
         inner_params = Hash[Base64.decode64(params[:p]).gsub(/[{}"]/, '').split(',').map{|param_pair| param_pair.split(':')}].symbolize_keys
         out_of_stock = inner_params[:OOS] == 'Y' ? true : false
         battery = inner_params[:BTY].to_i
-        if machine = Machine.where(serial_number: params[:m]).first and machine.pulses.where(frame_number: params[:f]).blank?
-          machine.active(out_of_stock: out_of_stock, battery: battery)
-          machine_dispensation = machine.dispensations.requested.order(:requested_at).first
-          content = Base64.encode64(if machine_dispensation.blank?
-            '1'
+        if machine = Machine.where(serial_number: params[:m]).first
+          if (existed_pulse = machine.pulses.where(frame_number: params[:f]).first).blank?
+            machine.active(out_of_stock: out_of_stock, battery: battery)
+            machine_dispensation = machine.dispensations.requested.order(:requested_at).first
+            content = Base64.encode64(if machine_dispensation.blank?
+              '1'
+            else
+              machine_dispensation.response!
+              "#{machine_dispensation.id},#{machine_dispensation.amount}"
+            end).strip
+            "#{params[:f]},#{content.length},#{content}".tap do |response_data|
+              create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], out_of_stock: out_of_stock, battery: battery, response_data: response_data)
+            end
           else
-            machine_dispensation.response!
-            "#{machine_dispensation.id},#{machine_dispensation.amount}"
-          end).strip
-          "#{params[:f]},#{content.length},#{content}".tap do |response_data|
-            create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], out_of_stock: out_of_stock, battery: battery, response_data: response_data)
+            existed_pulse.response_data
           end
         end
       end
