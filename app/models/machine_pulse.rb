@@ -8,7 +8,9 @@ class MachinePulse < ActiveRecord::Base
         out_of_stock = inner_params[:OOS] == 'Y' ? true : false
         battery = inner_params[:BTY].to_i
         if machine = Machine.where(serial_number: params[:m]).first
-          if (existed_pulse = machine.pulses.where(frame_number: params[:f]).first).blank?
+          existed_pulse = machine.pulses.where(frame_number: params[:f]).first
+          existed_pulse.destroy if where('created_at > ?', existed_pulse.created_at).count > 5
+          if existed_pulse.blank? or existed_pulse.destroyed?
             machine.active(out_of_stock: out_of_stock, battery: battery)
             machine_dispensation = machine.dispensations.requested.order(:requested_at).first
             content = Base64.encode64(if machine_dispensation.blank?
