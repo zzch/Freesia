@@ -7,7 +7,13 @@ module V1
         header('Content-Type', 'text/html;charset=GBK')
         env['api.format'] = :txt
         status 200
-        present MachinePulse.response(Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys)
+        wrap_params = Hash[request.body.read.split('&').map{|param_pair| param_pair.split('=')}].symbolize_keys
+        json_params = Hash[Base64.decode64(wrap_params[:p]).gsub(/[{}"]/, '').split(',').map{|param_pair| param_pair.split(':')}].symbolize_keys
+        options = { frame_number: wrap_params[:f], frame_type: wrap_params[:t], serial_number: wrap_params[:m], gprs_intensity: wrap_params[:g], json_params: json_params }
+        present(case json_params[:TYP]
+        when 113 then MachinePulse.response(options)
+        when 2 then MachineReport.response(options)
+        end)
       end
 
       desc '加球机出球确认'

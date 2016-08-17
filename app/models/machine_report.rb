@@ -1,19 +1,17 @@
 class MachineReport < ActiveRecord::Base
   belongs_to :machine
 
-  def self.response params = []
+  def self.response options = {}
     ActiveRecord::Base.transaction do
-      if !params[:f].blank? and !params[:t].blank? and !params[:m].blank? and !params[:g].blank? and !params[:p].blank?
-        inner_params = Hash[Base64.decode64(params[:p]).gsub(/[{}"]/, '').split(',').map{|param_pair| param_pair.split(':')}].symbolize_keys
-        dispensation_id = inner_params[:TID]
-        success = inner_params[:OB] == 'Y' ? true : false
-        error_code = inner_params[:EC]
-        if machine = Machine.where(serial_number: params[:m]).first and machine.reports.where(frame_number: params[:f]).blank? and machine_dispensation = machine.dispensations.where(id: dispensation_id).first
-          create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], machine_dispensation: machine_dispensation, success: success, error_code: error_code)
+      if !options[:frame_number].blank? and !options[:frame_type].blank? and !options[:serial_number].blank? and !options[:gprs_intensity].blank? and !options[:json_params].blank?
+        dispensation_id, error_code = options[:json_params][:TID], options[:json_params][:EC]
+        success = options[:json_params][:OB] == 'Y' ? true : false
+        if machine = Machine.where(serial_number: options[:serial_number]).first and machine.reports.where(frame_number: options[:frame_number]).blank? and machine_dispensation = machine.dispensations.where(id: dispensation_id).first
+          create!(machine: machine, frame_number: options[:frame_number], frame_type: options[:frame_type], gprs_intensity: options[:gprs_intensity], machine_dispensation: machine_dispensation, success: success, error_code: error_code)
           machine.up!
           machine_dispensation.confirm! if success
           content = Base64.encode64('1').strip
-          "#{params[:f]},#{content.length},#{content}"
+          "#{options[:frame_number]},#{content.length},#{content}"
         end
       end
     end

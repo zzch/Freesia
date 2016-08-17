@@ -1,14 +1,13 @@
 class MachinePulse < ActiveRecord::Base
   belongs_to :machine
 
-  def self.response params = []
+  def self.response options = {}
     ActiveRecord::Base.transaction do
-      if !params[:f].blank? and !params[:t].blank? and !params[:m].blank? and !params[:g].blank? and !params[:p].blank?
-        inner_params = Hash[Base64.decode64(params[:p]).gsub(/[{}"]/, '').split(',').map{|param_pair| param_pair.split(':')}].symbolize_keys
-        out_of_stock = inner_params[:OOS] == 'Y' ? true : false
-        battery = inner_params[:BTY].to_i
-        if machine = Machine.where(serial_number: params[:m]).first
-          existed_pulse = machine.pulses.where(frame_number: params[:f]).first
+      if !options[:frame_number].blank? and !options[:frame_type].blank? and !options[:serial_number].blank? and !options[:gprs_intensity].blank? and !options[:json_params].blank?
+        out_of_stock = options[:json_params][:OOS] == 'Y' ? true : false
+        battery = options[:json_params][:BTY].to_i
+        if machine = Machine.where(serial_number: options[:serial_number]).first
+          existed_pulse = machine.pulses.where(frame_number: options[:frame_number]).first
           existed_pulse.destroy if !existed_pulse.blank? and where('created_at > ?', existed_pulse.created_at).count > 5
           if existed_pulse.blank? or existed_pulse.destroyed?
             machine.active(out_of_stock: out_of_stock, battery: battery)
@@ -19,8 +18,8 @@ class MachinePulse < ActiveRecord::Base
               machine_dispensation.response!
               "#{machine_dispensation.id},#{machine_dispensation.amount}"
             end).strip
-            "#{params[:f]},#{content.length},#{content}".tap do |response_data|
-              create!(machine: machine, frame_number: params[:f], frame_type: params[:t], gprs_intensity: params[:g], out_of_stock: out_of_stock, battery: battery, response_data: response_data)
+            "#{options[:frame_number]},#{content.length},#{content}".tap do |response_data|
+              create!(machine: machine, frame_number: options[:frame_number], frame_type: options[:frame_type], gprs_intensity: options[:gprs_intensity], out_of_stock: out_of_stock, battery: battery, response_data: response_data)
             end
           else
             existed_pulse.response_data
