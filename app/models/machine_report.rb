@@ -1,5 +1,6 @@
 class MachineReport < ActiveRecord::Base
   belongs_to :machine
+  belongs_to :machine_dispensation
 
   def self.response options = {}
     ActiveRecord::Base.transaction do
